@@ -1,11 +1,16 @@
 <!-- overlay.html -->
 <div id="explanationOverlay" class="overlay">
-  <div class="overlay-content">
+  <div
+    class="overlay-content"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="overlayTitle"
+  >
     <button class="close-btn" aria-label="Schließen" id="overlay-close">
       &times;
     </button>
 
-    <h2>Spiel-Erklärung – El Pollo Loco</h2>
+    <h2 id="overlayTitle">Spiel-Erklärung – El Pollo Loco</h2>
 
     <p>
       Willkommen! In <b>El Pollo Loco</b> spielst du <b>Pepe</b>. Sammle Münzen
@@ -16,8 +21,8 @@
     <hr class="overlay-divider" />
 
     <!-- Steuerung -->
-    <section>
-      <h3>Steuerung</h3>
+    <section aria-labelledby="controlsTitle">
+      <h3 id="controlsTitle">Steuerung</h3>
       <div class="grid-2">
         <div class="card">
           <div class="card-title">Bewegen</div>
@@ -48,8 +53,8 @@
     <hr class="overlay-divider" />
 
     <!-- Ziel -->
-    <section>
-      <h3>Ziel</h3>
+    <section aria-labelledby="goalTitle">
+      <h3 id="goalTitle">Ziel</h3>
       <ul>
         <li>💰 Münzen einsammeln (Punkte)</li>
         <li>🍾 Flaschen sammeln und gezielt einsetzen</li>
@@ -61,8 +66,8 @@
     <hr class="overlay-divider" />
 
     <!-- Tipps -->
-    <section>
-      <h3>Tipps</h3>
+    <section aria-labelledby="tipsTitle">
+      <h3 id="tipsTitle">Tipps</h3>
       <div class="callout">
         <ul>
           <li>❤️ Behalte die Lebensanzeige im Blick.</li>
