@@ -1,2 +1,25 @@
-hello world
-hello rest too
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Pollo Loco</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="body">
+    <div id="fullscreen">
+        <h1 id="mainheadline" class="hidemobile">El Pollo Loco</h1>
+
+        <!-- Startscreen -->
+        <div id="startscreen" class="flex-center">
+            <img src="./img/9_intro_outro_screens/start/startscreen_1.png" class="defaultendscreen" alt="Start screen">
+            <div class="button flex-center" id="startButton">Start Game</div>
+        </div>
+
+        <!-- Canvas -->
+        <canvas class="d-none" id="canvas" width="720" height="480">
+            Your browser does not support canvas element.
+        </canvas>
+    </div>
+</body>
+</html>
