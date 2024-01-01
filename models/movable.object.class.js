@@ -65,9 +65,6 @@ class MovableObject extends DrawableObject {
 
   isDead() { return this.energy == 0; }
 
-  /**
-   * Kill enemy and remove it from level after delay.
-   */
   isKilled(enemy) {
     this.isAlive = false;
     world.playSound(world.chickenHurt_sound);
@@ -97,5 +94,51 @@ class MovableObject extends DrawableObject {
     setTimeout(() => {
       stopGame();
     }, 2500);
+  }
+
+  /**
+   * The function animates the enemy by moving it left and playing its animation.
+   */
+  animateEnemy() {
+    this.moveEnemyLeft();
+    this.playEnemyAnimation();
+  }
+
+  /**
+   * This function moves an enemy to the left at a rate of 60 frames per second, as long as the enemy
+   * is alive.
+   */
+  moveEnemyLeft() {
+    setInterval(() => {
+      if (this.isAlive) {
+        this.moveLeft();
+      } else clearInterval();
+    }, 1000 / 60);
+  }
+
+  /**
+   * This function plays a walking animation for an enemy character at a set interval, but stops the
+   * animation if the enemy is no longer alive.
+   */
+  playEnemyAnimation() {
+    setInterval(() => {
+      if (this.isAlive) {
+        this.playAnimation(this.IMAGES_WALKING);
+      } else {
+        this.stopEnemyAnimation();
+      }
+    }, 200);
+  }
+
+  /**
+   * The function stops the enemy animation, plays the dead image, and moves the enemy down after a
+   * delay.
+   */
+  stopEnemyAnimation() {
+    clearInterval();
+    this.playAnimation(this.IMAGES_DEAD);
+    setTimeout(() => {
+      this.moveDown(50);
+    }, 1800);
   }
 }
