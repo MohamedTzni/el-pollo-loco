@@ -12,7 +12,7 @@ class World {
 
   // --- Audio ---
   backgroundMusic = new Audio("./audio/background.mp3");
-  chickenHurt_sound = new Audio("./audio/chickennouch.wav");
+  chickenHurt_sound = new Audio("./audio/chickenouch.wav");
   coin_sound = new Audio("./audio/collect_coin.wav");
   bottle_pickup_sound = new Audio("./audio/collect_bottle.wav");
 
@@ -28,17 +28,11 @@ class World {
     this.run();
   }
 
-  /**
-   * The function sets the world and audio for a character in JavaScript.
-   */
   setWorld() {
     this.character.world = this;
     this.setAudio();
   }
 
-  /**
-   * Loops for collisions, collection and throw checks.
-   */
   run() {
     setInterval(() => {
       this.checkCollisions();
@@ -52,9 +46,6 @@ class World {
     }, 150);
   }
 
-  /**
-   * Main draw loop.
-   */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
@@ -62,7 +53,6 @@ class World {
     this.drawObjects();
     this.ctx.translate(-this.camera_x, 0);
 
-    // Fixed UI
     this.addObjectsToMap(this.statusBar);
 
     this.ctx.translate(this.camera_x, 0);
@@ -71,7 +61,6 @@ class World {
     this.drawThrowableObjects();
     this.ctx.translate(-this.camera_x, 0);
 
-    // repeat
     requestAnimationFrame(() => this.draw());
   }
 
@@ -97,25 +86,20 @@ class World {
   }
 
   addToMap(object) {
-    if (object.flippedGraphics) {
-      this.flipImage(object);
-    }
+    if (object.flippedGraphics) this.flipImage(object);
     object.draw(this.ctx);
-
-    if (object.flippedGraphics) {
-      this.flipImageBack(object);
-    }
+    if (object.flippedGraphics) this.flipImageBack(object);
   }
 
   flipImage(object) {
     this.ctx.save();
-    this.ctx.translate(object.width, 0); // move by width of object
-    this.ctx.scale(-1, 1); // mirror
-    object.x = object.x * -1; // turn x-axis
+    this.ctx.translate(object.width, 0);
+    this.ctx.scale(-1, 1);
+    object.x = object.x * -1;
   }
 
   flipImageBack(object) {
-    object.x = object.x * -1; // turn x-axis
+    object.x = object.x * -1;
     this.ctx.restore();
   }
 
@@ -134,20 +118,15 @@ class World {
       if (this.isJumpingOnEnemy(enemy)) {
         enemy.isKilled(enemy);
         this.character.bounceUp();
-        // SFX beim Draufspringen aufs Huhn
         this.playSound(this.chickenHurt_sound);
       }
-      if (this.character.isColliding(enemy)) {
-        this.hitCharacter(5);
-      }
+      if (this.character.isColliding(enemy)) this.hitCharacter(5);
     });
   }
 
   checkEndbossCollision() {
     this.level.endboss.forEach((endboss) => {
-      if (this.character.isColliding(endboss)) {
-        this.hitCharacter(20);
-      }
+      if (this.character.isColliding(endboss)) this.hitCharacter(20);
     });
   }
 
@@ -182,9 +161,7 @@ class World {
   }
 
   checkCharacterIsLeftOfEndboss() {
-    if (this.isBehindEndboss()) {
-      this.hitCharacter(100);
-    }
+    if (this.isBehindEndboss()) this.hitCharacter(100);
   }
 
   // ---- Item collection functions ----
@@ -203,24 +180,18 @@ class World {
   }
 
   canCollectItem(item, Obj) {
-    return (
-      this.character.isColliding(item) &&
-      item instanceof Obj &&
-      !item.isCollected
-    );
+    return this.character.isColliding(item) && item instanceof Obj && !item.isCollected;
   }
 
   collectBottle() {
     this.collectedBottles++;
-    this.playSound(this.bottle_pickup_sound); // SFX: Bottle aufgenommen
-    this.statusBar[2].setPercentage(
-      (this.collectedBottles / amountCollectableBottles) * 100
-    );
+    this.playSound(this.bottle_pickup_sound);
+    this.statusBar[2].setPercentage((this.collectedBottles / amountCollectableBottles) * 100);
   }
 
   collectCoin() {
     this.collectedCoins++;
-    this.playSound(this.coin_sound); // SFX: Coin aufgenommen
+    this.playSound(this.coin_sound);
     this.statusBar[1].setPercentage(
       (this.collectedCoins / amountCollectableCoins) * 100
     );
@@ -228,54 +199,35 @@ class World {
 
   checkThrowObjects() {
     if (this.isBottleAvailabe() && this.character.isLookingLeft()) {
-      let bottle = new ThrowableBottle(
-        this.character.x - 25,
-        this.character.y + 100,
-        "left"
-      );
+      let bottle = new ThrowableBottle(this.character.x - 25, this.character.y + 100, "left");
       this.throwBottle(bottle);
     } else if (this.isBottleAvailabe()) {
-      let bottle = new ThrowableBottle(
-        this.character.x + 100,
-        this.character.y + 100,
-        "right"
-      );
+      let bottle = new ThrowableBottle(this.character.x + 100, this.character.y + 100, "right");
       this.throwBottle(bottle);
     }
   }
 
   // ---- Sound functions ----
 
-  /**
-   * Play only if NOT muted.
-   * Respektiert ein globales Flag `isSoundMuted` (z. B. vom UI-Toggle).
-   */
   playSound(sound) {
-    const muted = typeof isSoundMuted !== "undefined" ? isSoundMuted : false;
+    const muted = (typeof isSoundMuted !== "undefined") ? isSoundMuted : false;
     if (!muted) {
       try {
-        // kurze Effekte resetten; Loops (z. B. Walking) lassen wir so
         if (!sound.loop) sound.currentTime = 0;
         sound.play().catch(() => {});
       } catch {}
     } else {
-      // Bei Mute auch die Musik zuverlässig stoppen
       if (!sound.paused) {
-        try {
-          sound.pause();
-        } catch {}
+        try { sound.pause(); } catch {}
       }
     }
   }
 
   setAudio() {
-    // Grundkonfiguration
     this.chickenHurt_sound.volume = 0.2;
     this.backgroundMusic.volume = 0.2;
     this.backgroundMusic.playbackRate = 1.2;
     this.backgroundMusic.loop = true;
-
-    // Hintergrundmusik startet jetzt über die gleiche Mute-Logik wie SFX
     this.playSound(this.backgroundMusic);
   }
 
@@ -311,7 +263,6 @@ class World {
     this.level.endboss[0].hit(damage);
     this.level.endboss[0].hadFirstHit = true;
     this.level.endboss[0].speed = 15;
-
     if (this.statusBar[3]) {
       this.statusBar[3].setPercentage(this.level.endboss[0].energy);
     }
