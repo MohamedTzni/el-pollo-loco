@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Pollo Loco</title>
-
+    
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="152x152" href="./img/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon/favicon-32x32.png">
@@ -29,11 +29,30 @@
 
         <!-- Endscreen -->
         <div id="endscreen" class="d-none"></div>
-
+        
         <!-- Canvas -->
         <canvas class="d-none" id="canvas" width="720" height="480">
             Your browser does not support canvas element.
         </canvas>
+        
+        <!-- Controls -->
+        <div id="controlsdescription" class="hidemobile">
+            <div>
+                <div><img src="./img/1_controls/left.png" alt="Left">Left</div>
+                <div><img src="./img/1_controls/right.png" alt="Right">Right</div>
+                <div><img src="./img/1_controls/jump.png" alt="Jump">Space</div>
+                <div><img src="./img/1_controls/throwbottle.png" alt="Throw">D</div>
+                <div id="infobtn" class="d-none">
+                    <img src="./img/1_controls/info.png" alt="Info">Info
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menü-Buttons -->
+        <div class="menu-bar">
+            <button type="button" class="cta" id="btn-explain">Spiel-Erklärung</button>
+            <button type="button" class="cta" id="btn-impressum">Impressum</button>
+        </div>
     </div>
 </body>
 </html>
