@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Pollo Loco</title>
+    
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="152x152" href="./img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon/favicon-16x16.png">
+    <link rel="mask-icon" href="./img/favicon/safari-pinned-tab.svg" color="#ffc300">
+    <link rel="shortcut icon" href="./img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#ffc300">
+    <meta name="theme-color" content="#ffc300">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="body">
+    <div id="fullscreen">
+        <h1 id="mainheadline" class="hidemobile">El Pollo Loco</h1>
+
+        <div id="rotationAlert" class="flex-center d-none">
+            <div class="flex-center">
+                <img src="./img/1_controls/rotate.png" alt="Rotate device">Please rotate your device.
+            </div>
+        </div>
+
+        <!-- Startscreen -->
+        <div id="startscreen" class="flex-center">
+            <img src="./img/9_intro_outro_screens/start/startscreen_1.png" class="defaultendscreen" alt="Start screen">
+            <!-- Start Button -->
+            <!-- EINZIGE ÄNDERUNG: onclick="startGame()" hinzugefügt -->
+            <div class="button flex-center" id="startButton" onclick="startGame()">Start Game</div>
+        </div>
+
+        <!-- Endscreen -->
+        <div id="endscreen" class="d-none"></div>
+        
+        <!-- Canvas -->
+        <canvas class="d-none" id="canvas" width="720" height="480">
+            Your browser does not support canvas element.
+        </canvas>
+        
+        <!-- Controls -->
+        <div id="controlsdescription" class="hidemobile">
+            <div>
+                <div><img src="./img/1_controls/left.png" alt="Left">Left</div>
+                <div><img src="./img/1_controls/right.png" alt="Right">Right</div>
+                <div><img src="./img/1_controls/jump.png" alt="Jump">Space</div>
+                <div><img src="./img/1_controls/throwbottle.png" alt="Throw">D</div>
+                <div id="infobtn" class="d-none">
+                    <img src="./img/1_controls/info.png" alt="Info">Info
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menü-Buttons -->
+        <div class="menu-bar">
+            <button type="button" class="cta" id="btn-explain">Spiel-Erklärung</button>
+            <button type="button" class="cta" id="btn-impressum">Impressum</button>
+        </div>
+        
+        <!-- Mobile controls -->
+        <div class="controls-container-bottom">
+            <div class="btns btns-top">
+                <div id="btn-fullscreen" class="settings-btn d-none">
+                    <img src="./img/1_controls/fullscreen.png" alt="Fullscreen">
+                </div>
+                <div id="btn-sound" class="settings-btn d-none">
+                    <img id="soundicon" alt="Sound">
+                </div>
+            </div>
+            <div class="btns btns-left">
+                <div id="btn-left" class="control-btn hide d-none">
+                    <img src="./img/1_controls/left.png" alt="Move left">
+                </div>
+                <div id="btn-right" class="control-btn hide d-none">
+                    <img src="./img/1_controls/right.png" alt="Move right">
+                </div>
+            </div>
+            <div class="btns btns-right">
+                <div id="btn-jump" class="control-btn hide d-none">
+                    <img src="./img/1_controls/jump.png" alt="Jump">
+                </div>
+                <div id="btn-throw" class="control-btn hide d-none">
+                    <img src="./img/1_controls/throwbottle.png" alt="Throw bottle">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript-Dateien (zu deiner Ordnerstruktur passend) -->
+    <!-- Models -->
+    <script src="./models/drawable-object.class.js"></script>
+    <script src="./models/movable-object.class.js"></script>
+    <script src="./models/throwable-object.class.js"></script>
+    <!-- Character -->
+    <script src="./models/pepe.class.js"></script>
+    <!-- Enemies -->
+    <script src="./models/chicken.class.js"></script>
+    <script src="./models/smallchicken.class.js"></script>
+    <script src="./models/endboss.class.js"></script>
+    <!-- Throwable Objects -->
+    <script src="./models/throwable-bottle.class.js"></script>
+    <!-- Collectables -->
+    <script src="./models/collectable-object.class.js"></script>
+    <script src="./models/collectable-bottle.class.js"></script>
+    <script src="./models/collectable-coin.class.js"></script>
+    <!-- UI -->
+    <script src="./models/statusbar.class.js"></script>
+    <script src="./models/healthbar.class.js"></script>
+    <script src="./models/coinbar.class.js"></script>
+    <script src="./models/bottlebar.class.js"></script>
+    <script src="./models/endbossbar.class.js"></script>
+    <!-- Background -->
+    <script src="./models/cloud.class.js"></script>
+    <script src="./models/background-object.class.js"></script>
+    <!-- Levels -->
+    <script src="./models/level.class.js"></script>
+    <script src="./levels/level1.js"></script>
+    <!-- Game Setup -->
+    <script src="./models/world.class.js"></script>
+    <script src="./models/keyboard.class.js"></script>
+    <script src="./js/templates.js"></script>
+    <script src="./js/game.js"></script>
+    <!-- Overlay Script -->
+    <script src="./js/overlay.js"></script>
+</body>
+</html>
