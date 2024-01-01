@@ -309,4 +309,202 @@ canvas {
 }
 .control-btn img {
   height: 70px;
-  wid
+  width: 70px;
+  background-color: rgba(255, 221, 0, 0.25);
+  border-radius: 100px;
+}
+.settings-btn img {
+  height: 30px;
+  width: 30px;
+}
+
+/* Einzelne Icons höher setzen */
+.mute-btn {
+  position: relative;
+  bottom: 10px;
+}
+.fullscreen-btn {
+  position: relative;
+  bottom: 10px;
+}
+
+#controlsdescription {
+  background-color: rgba(160, 34, 10, 0.75);
+  height: 60px;
+  width: 100%;
+  font-size: 36px;
+  color: rgba(255, 221, 0, 0.9);
+  letter-spacing: 2px;
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.6);
+}
+#controlsdescription > div {
+  gap: 50px;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+#controlsdescription > div > div {
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#controlsdescription > div > div > img {
+  height: 40px;
+  width: 40px;
+  background-color: rgba(255, 221, 0, 0.9);
+  border-radius: 100px;
+  margin: 5px;
+}
+
+#rotationAlert {
+  position: absolute;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 9;
+  font-size: 60px;
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.6);
+}
+#rotationAlert div {
+  flex-direction: column;
+  font-size: 52px;
+}
+#rotationAlert img {
+  height: 80px;
+  width: 80px;
+  background-color: rgba(255, 221, 0, 1);
+  border-radius: 10px;
+  padding: 15px;
+  border: 1px solid black;
+}
+
+#infobtn {
+  cursor: pointer;
+  color: rgb(255, 221, 0);
+}
+#infobtn:hover {
+  text-decoration: underline;
+  color: rgb(255, 153, 0);
+}
+#infobtn img {
+  background-color: rgba(255, 221, 0, 1) !important;
+}
+#infobtn:hover img {
+  background-color: rgb(255, 153, 0) !important;
+}
+
+/* ===== Responsive ===== */
+@media only screen and (max-width: 914px) {
+  canvas {
+    width: 100%;
+  }
+  #startscreen img,
+  #endscreen img {
+    width: 100%;
+    height: auto;
+  }
+  .menu-bar {
+    gap: 14px;
+  }
+  .cta {
+    height: 48px;
+    font-size: calc(0.6 * 48px);
+    min-width: 160px;
+  }
+}
+@media only screen and (min-width: 1200px) and (min-height: 480px) {
+  .hide {
+    display: none;
+  }
+}
+@media only screen and (max-width: 916px) and (max-height: 480px) {
+  canvas {
+    height: 100vh;
+  }
+  #startscreen img,
+  #endscreen img {
+    height: 100vh;
+    width: 720px;
+  }
+  body {
+    justify-content: flex-start;
+    position: relative;
+    margin: auto;
+    top: 0;
+    left: 0;
+  }
+}
+@media only screen and (max-width: 916px) {
+  .hidemobile {
+    display: none;
+  }
+}
+@media only screen and (max-height: 470px) {
+  .btns-top {
+    bottom: 390px;
+  }
+}
+@media only screen and (max-height: 450px) {
+  .btns-top {
+    bottom: 370px;
+  }
+}
+@media only screen and (max-height: 430px) {
+  .btns-top {
+    bottom: 350px;
+  }
+}
+@media only screen and (max-height: 410px) {
+  .btns-top {
+    bottom: 330px;
+  }
+}
+@media only screen and (max-height: 390px) {
+  .btns-top {
+    bottom: 310px;
+  }
+}
+@media only screen and (max-height: 370px) {
+  .btns-top {
+    bottom: 290px;
+  }
+}
+@media only screen and (max-height: 350px) {
+  .btns-top {
+    bottom: 270px;
+  }
+}
+@media only screen and (max-height: 330px) {
+  .btns-top {
+    bottom: 250px;
+  }
+}
+@media only screen and (max-height: 310px) {
+  .btns-top {
+    bottom: 230px;
+  }
+}
+
+/* Kleinere Schriften im Overlay bei sehr kleinen Screens */
+@media (max-width: 520px) {
+  .overlay-content {
+    padding: 26px 22px;
+  }
+  .overlay-content h2 {
+    font-size: 24px;
+  }
+  .overlay-content h3 {
+    font-size: 18px;
+  }
+  .overlay-content p,
+  .overlay-content ul {
+    font-size: 15px;
+  }
+}
