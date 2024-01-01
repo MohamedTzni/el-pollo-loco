@@ -62,11 +62,16 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * The function animates the endboss character and displays its health bar when the player character
+   * comes within a certain distance.
+   */
   animate() {
     let i;
     let hadFirstContact = false;
     let endbossHealthbar = new EndBossBar();
     
+
     setInterval(() => {
       if (world.character.x > this.x - 500 && !hadFirstContact) {
         i = 0;
@@ -81,6 +86,9 @@ class Endboss extends MovableObject {
     }, 100);
   }
 
+  /**
+   * The function checks if the endboss is dead or hurt and plays the appropriate sound or animation.
+   */
   playEndbossGotHit() {
     if (this.isDead()) {
       world.playSound(this.endbossDead_sound);
@@ -92,6 +100,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * The function plays an animation of the end boss dying and moves it down by 30 units.
+   */
   playEndbossDying() {
     this.playAnimation(this.IMAGES_DEAD);
     this.moveDown(30);
@@ -100,7 +111,9 @@ class Endboss extends MovableObject {
   /**
    * The function plays different animations for an end boss character based on the value of the input
    * parameter.
-   * @param i - numeric phase counter
+   * @param i - The parameter "i" is a number that is used to determine which animation to play in the
+   * "playEndbossAnimationLoop" function. It is likely used as a counter or timer to control the timing
+   * and sequence of the different animations.
    */
   playEndbossAnimationLoop(i) {
     if (this.hadFirstHit) {
