@@ -66,7 +66,7 @@ class Endboss extends MovableObject {
     let i;
     let hadFirstContact = false;
     let endbossHealthbar = new EndBossBar();
-
+    
     setInterval(() => {
       if (world.character.x > this.x - 500 && !hadFirstContact) {
         i = 0;
@@ -75,15 +75,12 @@ class Endboss extends MovableObject {
       }
       this.playEndbossAnimationLoop(i);
       if (i === 65) {
-        i = 25;
+        i = 25; // resets endboss' alert/attack animation loop
       }
       i++;
     }, 100);
   }
 
-  /**
-   * The function checks if the endboss is dead or hurt and plays the appropriate sound or animation.
-   */
   playEndbossGotHit() {
     if (this.isDead()) {
       world.playSound(this.endbossDead_sound);
@@ -95,11 +92,53 @@ class Endboss extends MovableObject {
     }
   }
 
-  /**
-   * The function plays an animation of the end boss dying and moves it down by 30 units.
-   */
   playEndbossDying() {
     this.playAnimation(this.IMAGES_DEAD);
     this.moveDown(30);
+  }
+
+  /**
+   * The function plays different animations for an end boss character based on the value of the input
+   * parameter.
+   * @param i - numeric phase counter
+   */
+  playEndbossAnimationLoop(i) {
+    if (this.hadFirstHit) {
+      this.playEndbossAttack();
+    } else if (i < 25) {
+      this.playEndBossWalk();
+    } else if (i > 25 && i < 45) {
+      this.playEndbossAlert();
+    } else if (i > 45) {
+      this.playEndbossAttack();
+    }
+  }
+
+  /**
+   * The function makes the end boss character move left, play a walking animation, and trigger a "got
+   * hit" animation.
+   */
+  playEndBossWalk() {
+    this.moveLeft();
+    this.playAnimation(this.IMAGES_WALKING);
+    this.playEndbossGotHit();
+  }
+
+  /**
+   * The function plays an animation and triggers the "endboss got hit" event.
+   */
+  playEndbossAlert() {
+    this.playAnimation(this.IMAGES_ALERT);
+    this.playEndbossGotHit();
+  }
+
+  /**
+   * The function makes the endboss move left, play an attack animation, and then play a got hit
+   * animation.
+   */
+  playEndbossAttack() {
+    this.moveLeft();
+    this.playAnimation(this.IMAGES_ATTACK);
+    this.playEndbossGotHit();
   }
 }
