@@ -3,7 +3,6 @@
   src: url("./fonts/AkayaKanadaka-Regular.ttf") format("truetype");
 }
 
-/* --- Base --- */
 * {
   margin: 0;
   padding: 0;
@@ -32,9 +31,7 @@ body {
   width: 100%;
 }
 
-/* ---- FIX: statt Fixgröße jetzt fluid + Seitenverhältnis ---- */
 .defaultendscreen {
-  /* war: width: 853px; height: 480px; */
   width: 100%;
   height: auto;
   max-width: 853px;
@@ -58,7 +55,6 @@ h1 {
   position: relative;
 }
 
-/* --- Start Game Button --- */
 .button {
   z-index: 3;
   position: absolute;
@@ -93,19 +89,16 @@ h1 {
   display: none !important;
 }
 
-/* ---- FIX: Canvas nicht mehr starr 720x480, sondern flexibel ---- */
 canvas {
   background-color: black;
   display: block;
   z-index: 1;
-  /* war: width: 720px; height: 480px; */
   width: 100%;
   height: auto;
   max-width: 720px;
   aspect-ratio: 720 / 480;
 }
 
-/* ===== Menü-Buttons ===== */
 .menu-bar {
   display: flex;
   justify-content: center;
@@ -139,7 +132,6 @@ canvas {
   background-color: rgb(255, 200, 0);
 }
 
-/* ===== Overlay ===== */
 .overlay {
   display: none;
   position: fixed;
@@ -205,7 +197,6 @@ canvas {
   font-size: 14px;
 }
 
-/* Overlay Helpers */
 .overlay-divider {
   border: none;
   height: 1px;
@@ -249,7 +240,6 @@ canvas {
   margin: 4px 0;
 }
 
-/* Close Button */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -268,7 +258,6 @@ canvas {
   color: #222;
 }
 
-/* ===== Controls-Leiste ===== */
 .controls-container-bottom {
   display: flex;
   justify-content: space-between;
@@ -294,7 +283,7 @@ canvas {
 }
 .btns-right {
   position: absolute;
-  bottom: 20px; /* höher gesetzt */
+  bottom: 20px;
   right: 0;
 }
 .settings-btn img {
@@ -318,7 +307,6 @@ canvas {
   width: 30px;
 }
 
-/* Einzelne Icons höher setzen */
 .mute-btn {
   position: relative;
   bottom: 10px;
@@ -400,7 +388,6 @@ canvas {
   background-color: rgb(255, 153, 0) !important;
 }
 
-/* ===== Responsive ===== */
 @media only screen and (max-width: 914px) {
   canvas {
     width: 100%;
@@ -492,7 +479,6 @@ canvas {
   }
 }
 
-/* Kleinere Schriften im Overlay bei sehr kleinen Screens */
 @media (max-width: 520px) {
   .overlay-content {
     padding: 26px 22px;
