@@ -27,6 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeOverlay();
       });
+
+      const btnImpressum = document.getElementById("btn-impressum");
+      if (btnImpressum) {
+        btnImpressum.addEventListener("click", () => {
+          window.location.href = "impressum.html";
+        });
+      }
     })
     .catch((err) =>
       console.error("[overlay] Konnte overlay.html nicht laden:", err)
