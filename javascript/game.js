@@ -30,7 +30,7 @@ function init() {
   detectMobileDevice();
   touchStart();
   touchEnd();
-  bindClickButtons();
+  bindClickButtons(); // Desktop-Click-Listener für Sound/Fullscreen
 }
 
 function bindClickButtons() {
@@ -56,10 +56,6 @@ function bindClickButtons() {
   }
 }
 
-/**
- * The function starts the game by generating a level, showing the game UI, creating a canvas,
- * initializing a world object, and loading sound settings.
- */
 function startGame() {
   generateLevel();
   showGameUI();
@@ -73,25 +69,18 @@ function startGame() {
   isSoundMuted = false;
   muteAudioFiles(false);
   setSoundIcon();
-  saveAudioSetting(); // überschreibt evtl. altes "true" in localStorage
+  saveAudioSetting();
   try {
     world.backgroundMusic.currentTime = 0;
     world.backgroundMusic.play().catch(() => {});
   } catch (e) {}
 }
 
-/**
- * The function reloads the game by hiding the end screen and starting the game again.
- */
 function reloadGame() {
   document.getElementById('endscreen').classList.add('d-none')
   startGame()
 }
 
-/**
- * The function stops the game by clearing all intervals, hiding the canvas and game UI, pausing the background
- * music, and showing the end screen after a delay of 1 second.
- */
 function stopGame() {
   clearAllIntervals();
   setTimeout(() => {
@@ -102,16 +91,10 @@ function stopGame() {
   }, 1000);
 }
 
-/**
- * The function clears all intervals set by the window object.
- */
 function clearAllIntervals() {
   for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
 
-/**
- * The function displays either a game won or game over screen and hides the game UI.
- */
 function showEndScreen() {
   let endscreen = document.getElementById("endscreen");
   if (world.gameWon) {
@@ -121,11 +104,58 @@ function showEndScreen() {
   }
   hideGameUI();
   endscreen.classList.remove("d-none");
-  showMenuBar(); // <-- NEU: auf dem Endscreen die Menü-Buttons wieder anzeigen
+  showMenuBar();
 }
 
-window.addEventListener("keydown", () => {});
-window.addEventListener("keyup", () => {});
+// ---- Functions for keyboard usage ----
+
+window.addEventListener("keydown", (event) => {
+  if (event.code == "ArrowRight") {
+    keyboard.KEY_RIGHT = true;
+  }
+  if (event.code == "ArrowLeft") {
+    keyboard.KEY_LEFT = true;
+  }
+  if (event.code == "Space") {
+    event.preventDefault(); // verhindert Scrollen/Seite-Fokus frisst Space
+    keyboard.KEY_SPACE = true;
+  }
+  if (event.code == "KeyD") {
+    keyboard.KEY_D = true;
+  }
+  if (event.code == "KeyM") {
+    keyboard.KEY_M = true;
+    toggleSound();
+  }
+  if (event.code == "Escape") {
+    keyboard.KEY_ESC = true;
+    leaveFullscreen();
+  }
+});
+
+window.addEventListener("keyup", (event) => {
+  if (event.code == "ArrowRight") {
+    keyboard.KEY_RIGHT = false;
+  }
+  if (event.code == "ArrowLeft") {
+    keyboard.KEY_LEFT = false;
+  }
+  if (event.code == "Space") {
+    event.preventDefault();
+    keyboard.KEY_SPACE = false;
+  }
+  if (event.code == "KeyD") {
+    keyboard.KEY_D = false;
+  }
+  if (event.code == "KeyM") {
+    keyboard.KEY_M = false;
+  }
+  if (event.code == "Escape") { // korrigiert von "KeyEscape"
+    keyboard.KEY_ESC = false;
+    leaveFullscreen();
+  }
+});
+
 portrait.addEventListener("change", () => checkMobileOrientation());
 
 function detectMobileDevice() {
@@ -144,8 +174,62 @@ function checkMobileOrientation() {
   }
 }
 
-function touchStart() {}
-function touchEnd() {}
+function touchStart() {
+  document.getElementById("btn-left").addEventListener("touchstart", (e) => {
+    keyboard.KEY_LEFT = true;
+    e.preventDefault();
+  });
+  document.getElementById("btn-right").addEventListener("touchstart", (e) => {
+    keyboard.KEY_RIGHT = true;
+    e.preventDefault();
+  });
+  document.getElementById("btn-jump").addEventListener("touchstart", (e) => {
+    keyboard.KEY_SPACE = true;
+    e.preventDefault();
+  });
+  document.getElementById("btn-throw").addEventListener("touchstart", (e) => {
+    keyboard.KEY_D = true;
+    e.preventDefault();
+  });
+  document.getElementById("btn-sound").addEventListener("touchstart", (e) => {
+    keyboard.KEY_M = true;
+    toggleSound();
+    e.preventDefault();
+  });
+  document.getElementById("btn-fullscreen").addEventListener("touchstart", (e) => {
+    keyboard.KEY_ESC = true;
+    toggleFullscreen();
+    e.preventDefault();
+  });
+}
+
+function touchEnd() {
+  document.getElementById("btn-left").addEventListener("touchend", (e) => {
+    keyboard.KEY_LEFT = false;
+    e.preventDefault();
+  });
+  document.getElementById("btn-right").addEventListener("touchend", (e) => {
+    keyboard.KEY_RIGHT = false;
+    e.preventDefault();
+  });
+  document.getElementById("btn-jump").addEventListener("touchend", (e) => {
+    keyboard.KEY_SPACE = false;
+    e.preventDefault();
+  });
+  document.getElementById("btn-throw").addEventListener("touchend", (e) => {
+    keyboard.KEY_D = false;
+    e.preventDefault();
+  });
+  // KORREKTUR: vorher versehentlich "touchstart"
+  document.getElementById("btn-sound").addEventListener("touchend", (e) => {
+    keyboard.KEY_M = false;
+    e.preventDefault();
+  });
+  document.getElementById("btn-fullscreen").addEventListener("touchend", (e) => {
+    keyboard.KEY_ESC = false;
+    e.preventDefault();
+  });
+}
 
 /* ==== Start-Button & Initialisierung ==== */
 document.addEventListener("DOMContentLoaded", () => {
