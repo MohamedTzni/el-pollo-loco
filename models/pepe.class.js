@@ -79,18 +79,18 @@ class Pepe extends MovableObject {
 
   // --- Referenzen ---
   world;
-  walking_sound = new Audio("audio/running_sand.wav");
-  hurt_sound = new Audio("audio/hurt.wav");
-  dead_sound = new Audio("audio/ohno.wav");
-  jump_sound = new Audio("audio/jump.wav");
+  walking_sound = new Audio("./audio/running_sand.wav");
+  hurt_sound = new Audio("./audio/hurt.wav");
+  dead_sound = new Audio("./audio/ohno.wav");
+  jump_sound = new Audio("./audio/jump.wav");
 
   // --- Inaktivitäts-Tracking ---
-  lastMoveTime = Date.now();       // Zeitpunkt der letzten Aktion
-  idleTimeoutMs = 4000;            // 4 Sekunden bis Long-Idle
-  flippedGraphics = false;         // Richtung (false = rechts, true = links)
+  lastMoveTime = Date.now();
+  idleTimeoutMs = 4000;
+  flippedGraphics = false;
 
   // --- Death-Guard ---
-  deathHandled = false;            // verhindert mehrfaches Triggern
+  deathHandled = false;
 
   /**
    * Erzeugt eine neue Pepe-Instanz und initialisiert Animationen, Sounds und Bewegung.
@@ -98,7 +98,7 @@ class Pepe extends MovableObject {
   constructor() {
     super();
     this.loadAllImages();
-    this.loadImage(this.IMAGES_IDLE[0]); // Startet mit einem Idle-Frame
+    this.loadImage(this.IMAGES_IDLE[0]);
     this.configureSounds();
     this.applyGravity();
     this.animate();
@@ -189,7 +189,7 @@ class Pepe extends MovableObject {
     this.walking_sound.currentTime = 0;
     this.world.playSound(this.dead_sound);
 
-    this.endGame(); // leitet auf stopGame() um
+    this.endGame();
   }
 
   /**
