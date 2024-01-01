@@ -4,6 +4,7 @@ class EndBossBar extends StatusBar {
   x = 480;
   y = -20;
 
+  // Nutzt die vorhandenen Healthbar-Bilder, damit keine 404-Logs mehr entstehen
   IMAGES = [
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png",
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png",
