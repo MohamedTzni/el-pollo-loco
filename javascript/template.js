@@ -27,3 +27,24 @@ function hideGameUI() {
   document.getElementById("btn-jump").classList.add("d-none");
   document.getElementById("btn-throw").classList.add("d-none");
 }
+
+/**
+ * This function renders a random game over screen with a button to reload the game.
+ * Picks an index from 0..gameOverScreens.length-1.
+ */
+function renderRandomGameOverScreen() {
+  const endScreenClass = isFullScreen ? "fullendscreen" : "defaultendscreen";
+  const maxIndex = gameOverScreens.length - 1;
+  const randomIndex = Math.floor(Math.random() * (maxIndex + 1));
+  return `<img src="${gameOverScreens[randomIndex]}" class="${endScreenClass}"></img>
+    <div class="button flex-center" onclick="reloadGame()">Back to Start</div>`;
+}
+
+/**
+ * The function renders a game won screen with an image and a button to reload the game.
+ */
+function renderGameWonScreen() {
+  const endScreenClass = isFullScreen ? "fullendscreen" : "defaultendscreen";
+  return `<img src="img/9_intro_outro_screens/game_over/gamewon2.png" class="${endScreenClass}"></img>
+    <div class="button flex-center" onclick="reloadGame()">Back to Start</div>`;
+}
