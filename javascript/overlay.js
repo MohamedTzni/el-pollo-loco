@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   fetch("overlay.html")
-    .then((r) => r.text())
+    .then((r) => {
+      if (!r.ok) throw new Error(`overlay.html ${r.status}`);
+      return r.text();
+    })
     .then((html) => {
       document.body.insertAdjacentHTML("beforeend", html);
 
@@ -18,8 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.setAttribute("aria-hidden", "true");
       };
       btnClose.addEventListener("click", closeOverlay);
+      overlay.addEventListener("click", (e) => {
+        if (e.target.id === "explanationOverlay") closeOverlay();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeOverlay();
+      });
     })
     .catch((err) =>
-      console.error("[overlay] overlay.html konnte nicht geladen werden:", err)
+      console.error("[overlay] Konnte overlay.html nicht laden:", err)
     );
 });
