@@ -24,6 +24,8 @@ function showMenuBar() {
   if (menu) menu.classList.remove("d-none");
 }
 
+// ---- Functions start here ----ich werde dir nach und nach
+
 /**
  * The function initializes the webpage by detecting mobile
  * devices, and setting up touch event listeners.
@@ -32,22 +34,41 @@ function init() {
   detectMobileDevice();
   touchStart();
   touchEnd();
+  bindClickButtons(); // Desktop-Click-Listener für Sound/Fullscreen
 }
 
 /**
- * The function detects if the device accessing the website has a small screen size and calls another
- * function to check its orientation if it is a mobile device.
+ * Desktop-Click-Listener für Sound/Fullscreen (ohne Touch).
  */
+function bindClickButtons() {
+  const btnSound = document.getElementById("btn-sound");
+  const btnFs    = document.getElementById("btn-fullscreen");
+
+  if (btnSound) {
+    btnSound.addEventListener("click", (e) => {
+      e.preventDefault();
+      keyboard.KEY_M = true;
+      toggleSound();
+      keyboard.KEY_M = false;
+    });
+  }
+
+  if (btnFs) {
+    btnFs.addEventListener("click", (e) => {
+      e.preventDefault();
+      keyboard.KEY_ESC = true;
+      // Fullscreen-Handling folgt in späterem Commit
+      keyboard.KEY_ESC = false;
+    });
+  }
+}
+
 function detectMobileDevice() {
   if (window.innerWidth < 500 && window.innerHeight < 900) {
     checkMobileOrientation();
   }
 }
 
-/**
- * The function checks the orientation of a mobile device and displays or hides certain elements based
- * on whether it is in portrait or landscape mode.
- */
 function checkMobileOrientation() {
   if (portrait.matches) {
     const rot = document.getElementById("rotationAlert");
@@ -61,6 +82,9 @@ function checkMobileOrientation() {
     if (ctrl) ctrl.classList.remove("d-none");
   }
 }
+
+function touchStart() {}
+function touchEnd() {}
 
 /* ==== Start-Button & Initialisierung ==== */
 document.addEventListener("DOMContentLoaded", () => {
