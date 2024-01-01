@@ -143,3 +143,76 @@ class Pepe extends MovableObject {
   updateLastMoveTime() { this.lastMoveTime = Date.now(); }
   playDyingAnimation() {}
 }
+/* ... gleicher Header wie oben ... */
+class Pepe extends MovableObject {
+  /* Eigenschaften, Images, Sounds, Tracking wie in Commit 1 ... */
+
+  constructor() {
+    super();
+    this.loadAllImages();
+    this.loadImage(this.IMAGES_IDLE[0]);
+    this.configureSounds();
+    this.applyGravity();
+    this.animate();
+  }
+
+  /* loadAllImages(), configureSounds(), animate() wie zuvor ... */
+
+  /**
+   * Bewegt den Charakter basierend auf Tastatureingaben.
+   * @private
+   */
+  moveCharacter() {
+    this.walking_sound.pause();
+
+    if (this.canMoveRight()) this.moveRight();
+    if (this.canMoveLeft()) this.moveLeft();
+
+    if (this.canJump()) {
+      this.world.playSound(this.jump_sound);
+      this.jump();
+      this.updateLastMoveTime();
+    }
+
+    this.world.camera_x = -this.x + 75;
+  }
+
+  canMoveRight() {
+    return (
+      this.world.keyboard.KEY_RIGHT && this.x < this.world.level.end_of_level_x
+    );
+  }
+
+  moveRight() {
+    super.moveRight();
+    if (!this.isAboveGround()) this.world.playSound(this.walking_sound);
+    this.flippedGraphics = false;
+    this.updateLastMoveTime();
+  }
+
+  canMoveLeft() {
+    return this.world.keyboard.KEY_LEFT && this.x > 0;
+  }
+
+  moveLeft() {
+    super.moveLeft();
+    if (!this.isAboveGround()) this.world.playSound(this.walking_sound);
+    this.flippedGraphics = true;
+    this.updateLastMoveTime();
+  }
+
+  isLookingLeft() { return this.flippedGraphics; }
+  isMoving() { return this.world.keyboard.KEY_RIGHT || this.world.keyboard.KEY_LEFT; }
+  canJump() { return this.world.keyboard.KEY_SPACE && !this.isAboveGround(); }
+
+  updateLastMoveTime() { this.lastMoveTime = Date.now(); }
+
+  /* Platzhalter-Methoden bleiben, werden in nächsten Commits gefüllt */
+  playCharacterAnimations() {}
+  handleDeath() {}
+  endGame() {}
+  handleHurt() {}
+  handleMovement() {}
+  handleIdle() {}
+  playDyingAnimation() {}
+}
