@@ -9,7 +9,17 @@ class Cloud extends MovableObject {
 
   constructor(x, i) {
     super().loadImage(this.IMAGES[i]);
-    this.x = x;
-    this.y = 20;
+    this.x = x + Math.random() * 100;
+    this.y = 20 + Math.random() * 10;
+    this.animate();
+  }
+
+  /**
+   * The function repeatedly calls the "moveLeft" function every 100 milliseconds using setInterval.
+   */
+  animate() {
+    setInterval(() => {
+      this.moveLeft();
+    }, 100);
   }
 }
