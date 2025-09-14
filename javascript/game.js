@@ -26,6 +26,10 @@ function showMenuBar() {
 
 // ---- Functions start here ----ich werde dir nach und nach
 
+/**
+ * The function initializes the webpage by detecting mobile
+ * devices, and setting up touch event listeners.
+ */
 function init() {
   detectMobileDevice();
   touchStart();
@@ -33,6 +37,9 @@ function init() {
   bindClickButtons(); // Desktop-Click-Listener für Sound/Fullscreen
 }
 
+/**
+ * Desktop-Click-Listener für Sound/Fullscreen (ohne Touch).
+ */
 function bindClickButtons() {
   const btnSound = document.getElementById("btn-sound");
   const btnFs    = document.getElementById("btn-fullscreen");
@@ -56,6 +63,10 @@ function bindClickButtons() {
   }
 }
 
+/**
+ * The function starts the game by generating a level, showing the game UI, creating a canvas,
+ * initializing a world object, and loading sound settings.
+ */
 function startGame() {
   generateLevel();
   showGameUI();
@@ -76,11 +87,18 @@ function startGame() {
   } catch (e) {}
 }
 
+/**
+ * The function reloads the game by hiding the end screen and starting the game again.
+ */
 function reloadGame() {
   document.getElementById('endscreen').classList.add('d-none')
   startGame()
 }
 
+/**
+ * The function stops the game by clearing all intervals, hiding the canvas and game UI, pausing the background
+ * music, and showing the end screen after a delay of 1 second.
+ */
 function stopGame() {
   clearAllIntervals();
   setTimeout(() => {
@@ -91,10 +109,16 @@ function stopGame() {
   }, 1000);
 }
 
+/**
+ * The function clears all intervals set by the window object.
+ */
 function clearAllIntervals() {
   for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
 
+/**
+ * The function displays either a game won or game over screen and hides the game UI.
+ */
 function showEndScreen() {
   let endscreen = document.getElementById("endscreen");
   if (world.gameWon) {
@@ -158,12 +182,20 @@ window.addEventListener("keyup", (event) => {
 
 portrait.addEventListener("change", () => checkMobileOrientation());
 
+/**
+ * The function detects if the device accessing the website has a small screen size and calls another
+ * function to check its orientation if it is a mobile device.
+ */
 function detectMobileDevice() {
   if (window.innerWidth < 500 && window.innerHeight < 900) {
     checkMobileOrientation();
   }
 }
 
+/**
+ * The function checks the orientation of a mobile device and displays or hides certain elements based
+ * on whether it is in portrait or landscape mode.
+ */
 function checkMobileOrientation() {
   if (portrait.matches) {
     document.getElementById("rotationAlert").classList.remove("d-none");
@@ -174,6 +206,9 @@ function checkMobileOrientation() {
   }
 }
 
+/**
+ * The function adds touch event listeners to buttons and updates the keyboard object accordingly.
+ */
 function touchStart() {
   document.getElementById("btn-left").addEventListener("touchstart", (e) => {
     keyboard.KEY_LEFT = true;
@@ -203,6 +238,10 @@ function touchStart() {
   });
 }
 
+/**
+ * The function sets event listeners for touch end events on specific buttons and updates corresponding
+ * keyboard keys to false.
+ */
 function touchEnd() {
   document.getElementById("btn-left").addEventListener("touchend", (e) => {
     keyboard.KEY_LEFT = false;
@@ -342,14 +381,14 @@ function muteAudioFiles(boolean) {
 
   // World / Enemies / Endboss / Music
   if (world.chickenHurt_sound) world.chickenHurt_sound.muted = boolean;
-  if (world.backgroundMusic) {
-    world.backgroundMusic.muted = boolean;
-    if (boolean) {
-      try { world.backgroundMusic.pause(); } catch (e) {}
-    } else {
-      try { world.backgroundMusic.play().catch(() => {}); } catch (e) {}
-    }
+if (world.backgroundMusic) {
+  world.backgroundMusic.muted = boolean;
+  if (boolean) {
+    try { world.backgroundMusic.pause(); } catch (e) {}
+  } else {
+    try { world.backgroundMusic.play().catch(() => {}); } catch (e) {}
   }
+}
 
   if (world.level && world.level.endboss && world.level.endboss[0]) {
     if (world.level.endboss[0].endbossDead_sound) {
