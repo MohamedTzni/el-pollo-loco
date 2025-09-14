@@ -11,10 +11,10 @@ class World {
   collectedCoins = 0;
 
   // --- Audio ---
-  backgroundMusic = new Audio("audio/background.mp3");
-  chickenHurt_sound = new Audio("audio/chickenouch.wav");
-  coin_sound = new Audio("audio/collect_coin.wav");
-  bottle_pickup_sound = new Audio("audio/collect_bottle.wav");
+  backgroundMusic = new Audio("./audio/background.mp3");
+  chickenHurt_sound = new Audio("./audio/chickennouch.wav");
+  coin_sound = new Audio("./audio/collect_coin.wav");
+  bottle_pickup_sound = new Audio("./audio/collect_bottle.wav");
 
   gameWon = false;
 
