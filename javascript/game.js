@@ -292,6 +292,82 @@ function leaveFullscreen() {
   }
 }
 
+// ---- Functions for audio ----
+
+function toggleSound() {
+  isSoundMuted = !isSoundMuted;
+  muteAudioFiles(isSoundMuted);
+  setSoundIcon();
+  saveAudioSetting();
+}
+
+function setSoundIcon() {
+  let soundicon = document.getElementById("soundicon");
+  if (isSoundMuted) {
+    soundicon.src = "./img/1_controls/muted.png";
+  } else {
+    soundicon.src = "./img/1_controls/loud.png";
+  }
+}
+
+function saveAudioSetting() {
+  localStorage.setItem("isEPLSoundMuted", isSoundMuted);
+}
+
+function initSoundSettings() {
+  let initsound = localStorage.getItem("isEPLSoundMuted");
+  if (initsound === null) {
+    isSoundMuted = false;
+  } else {
+    isSoundMuted = (initsound === "true");
+  }
+}
+
+function loadSoundSettings() {
+  initSoundSettings();
+  muteAudioFiles(isSoundMuted);
+  setSoundIcon();
+}
+
+function muteAudioFiles(boolean) {
+  if (!world) return;
+
+  // Character
+  if (world.character) {
+    if (world.character.walking_sound) world.character.walking_sound.muted = boolean;
+    if (world.character.hurt_sound)    world.character.hurt_sound.muted    = boolean;
+    if (world.character.dead_sound)    world.character.dead_sound.muted    = boolean;
+    if (world.character.jump_sound)    world.character.jump_sound.muted    = boolean;
+  }
+
+  // World / Enemies / Endboss / Music
+  if (world.chickenHurt_sound) world.chickenHurt_sound.muted = boolean;
+  if (world.backgroundMusic) {
+    world.backgroundMusic.muted = boolean;
+    if (boolean) {
+      try { world.backgroundMusic.pause(); } catch (e) {}
+    } else {
+      try { world.backgroundMusic.play().catch(() => {}); } catch (e) {}
+    }
+  }
+
+  if (world.level && world.level.endboss && world.level.endboss[0]) {
+    if (world.level.endboss[0].endbossDead_sound) {
+      world.level.endboss[0].endbossDead_sound.muted = boolean;
+    }
+  }
+
+  // Collectables
+  if (world.level && Array.isArray(world.level.collectableItems)) {
+    for (let i = 0; i < world.level.collectableItems.length; i++) {
+      const item = world.level.collectableItems[i];
+      if (item && item.collect_sound) {
+        item.collect_sound.muted = boolean;
+      }
+    }
+  }
+}
+
 /* ==== Start-Button & Initialisierung ==== */
 document.addEventListener("DOMContentLoaded", () => {
   init();
