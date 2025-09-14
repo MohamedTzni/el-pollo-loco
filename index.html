@@ -21,6 +21,12 @@
     <div id="fullscreen">
         <h1 id="mainheadline" class="hidemobile">El Pollo Loco</h1>
 
+        <div id="rotationAlert" class="flex-center d-none">
+            <div class="flex-center">
+                <img src="./img/1_controls/rotate.png" alt="Rotate device">Please rotate your device.
+            </div>
+        </div>
+
         <!-- Startscreen -->
         <div id="startscreen" class="flex-center">
             <img src="./img/9_intro_outro_screens/start/startscreen_1.png" class="defaultendscreen" alt="Start screen">
@@ -52,6 +58,34 @@
         <div class="menu-bar">
             <button type="button" class="cta" id="btn-explain">Spiel-Erklärung</button>
             <button type="button" class="cta" id="btn-impressum">Impressum</button>
+        </div>
+        
+        <!-- Mobile controls -->
+        <div class="controls-container-bottom">
+            <div class="btns btns-top">
+                <div id="btn-fullscreen" class="settings-btn d-none">
+                    <img src="./img/1_controls/fullscreen.png" alt="Fullscreen">
+                </div>
+                <div id="btn-sound" class="settings-btn d-none">
+                    <img id="soundicon" alt="Sound">
+                </div>
+            </div>
+            <div class="btns btns-left">
+                <div id="btn-left" class="control-btn hide d-none">
+                    <img src="./img/1_controls/left.png" alt="Move left">
+                </div>
+                <div id="btn-right" class="control-btn hide d-none">
+                    <img src="./img/1_controls/right.png" alt="Move right">
+                </div>
+            </div>
+            <div class="btns btns-right">
+                <div id="btn-jump" class="control-btn hide d-none">
+                    <img src="./img/1_controls/jump.png" alt="Jump">
+                </div>
+                <div id="btn-throw" class="control-btn hide d-none">
+                    <img src="./img/1_controls/throwbottle.png" alt="Throw bottle">
+                </div>
+            </div>
         </div>
     </div>
 </body>
