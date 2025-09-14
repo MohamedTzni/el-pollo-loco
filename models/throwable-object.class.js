@@ -15,4 +15,10 @@ class ThrowableObject extends MovableObject {
       setInterval(() => { this.x -= 15; }, 25);
     }
   }
+
+  removeObject() {
+    this.speedY = 0;
+    this.acceleration = -0.1;
+    this.y = this.ground;
+  }
 }
