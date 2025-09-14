@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => { 
   fetch("overlay.html")
     .then((r) => {
       if (!r.ok) throw new Error(`overlay.html ${r.status}`);
