@@ -19,7 +19,10 @@ class Smallchicken extends MovableObject {
   ];
 
   constructor(x) {
-    super();
-    this.x = x;
+    super().loadImages(this.IMAGES_WALKING);
+    this.loadImages(this.IMAGES_DEAD);
+    this.x = x + Math.random() * 400;
+    this.speed = 0.15 + Math.random() * 0.3;
+    this.animateEnemy();
   }
 }
