@@ -8,7 +8,7 @@ class Coin extends CollectableObject {
     left: 120,
     right: 60,
   };
-  collect_sound = new Audio("audio/collect_coin.wav");
+  collect_sound = new Audio("./audio/collect_coin.wav");
   IMAGES = ["img/8_coin/coin_1.png", "img/8_coin/coin_2.png"];
 
   constructor(x) {
@@ -18,10 +18,6 @@ class Coin extends CollectableObject {
     this.animate();
   }
 
-  /**
-   * The function uses setInterval to repeatedly call another function that plays an animation using a
-   * set of images.
-   */
   animate() {
     setInterval(() => this.playAnimation(this.IMAGES), 300);
   }
