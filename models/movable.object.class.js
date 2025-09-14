@@ -19,9 +19,6 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
-  /**
-   * The function checks if an object is above the ground or not.
-   */
   isAboveGround() {
     if (this instanceof ThrowableObject) {
       return true;
@@ -30,17 +27,8 @@ class MovableObject extends DrawableObject {
     }
   }
 
-  /**
-   * The function checks if an object is jumping by comparing its current height to the ground and its
-   * vertical speed.
-   */
-  isJumping() {
-    return this.y - this.ground < 0 && this.speedY < 0;
-  }
+  isJumping() { return this.y - this.ground < 0 && this.speedY < 0; }
 
-  /**
-   * The function checks if two objects are colliding based on their positions and dimensions.
-   */
   isColliding(obj) {
     return (
       (obj.isAlive || obj instanceof Coin || obj instanceof Bottle) &&
@@ -52,9 +40,6 @@ class MovableObject extends DrawableObject {
     );
   }
 
-  /**
-   * The function checks if an object has been jumped on by another object.
-   */
   isJumpedOn(obj) {
     return (
       obj.isAlive &&
@@ -63,9 +48,6 @@ class MovableObject extends DrawableObject {
     );
   }
 
-  /**
-   * The "hit" function reduces the energy and updates lastHit.
-   */
   hit(damage) {
     this.energy -= damage;
     if (this.energy < 0) {
@@ -75,21 +57,45 @@ class MovableObject extends DrawableObject {
     }
   }
 
-  /**
-   * Recently hurt?
-   */
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit;
     timepassed = timepassed / 1000;
     return timepassed < 1;
   }
 
-  isDead() {
-    return this.energy == 0;
+  isDead() { return this.energy == 0; }
+
+  /**
+   * Kill enemy and remove it from level after delay.
+   */
+  isKilled(enemy) {
+    this.isAlive = false;
+    world.playSound(world.chickenHurt_sound);
+    this.speed = 0;
+    setTimeout(() => {
+      let indexofenemy = world.getIndexOfItem(world.level.enemies, enemy);
+      world.level.enemies.splice(indexofenemy, 1);
+    }, 2000);
   }
 
   moveLeft() { this.x -= this.speed; }
   moveRight() { this.x += this.speed; }
   moveDown(fallspeed) { this.y += fallspeed; }
   moveUp(fallspeed) { this.y -= fallspeed; }
+
+  playAnimation(images) {
+    let i = this.currentImage % images.length;
+    let path = images[i];
+    this.img = this.imageCache[path];
+    this.currentImage++;
+  }
+
+  jump() { this.speedY = 20; }
+  bounceUp() { this.speedY = 15; }
+
+  endGame() {
+    setTimeout(() => {
+      stopGame();
+    }, 2500);
+  }
 }
