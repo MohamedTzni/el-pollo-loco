@@ -203,13 +203,19 @@ class World {
   }
 
   canCollectItem(item, Obj) {
-    return this.character.isColliding(item) && item instanceof Obj && !item.isCollected;
+    return (
+      this.character.isColliding(item) &&
+      item instanceof Obj &&
+      !item.isCollected
+    );
   }
 
   collectBottle() {
     this.collectedBottles++;
     this.playSound(this.bottle_pickup_sound); // SFX: Bottle aufgenommen
-    this.statusBar[2].setPercentage((this.collectedBottles / amountCollectableBottles) * 100);
+    this.statusBar[2].setPercentage(
+      (this.collectedBottles / amountCollectableBottles) * 100
+    );
   }
 
   collectCoin() {
@@ -222,10 +228,18 @@ class World {
 
   checkThrowObjects() {
     if (this.isBottleAvailabe() && this.character.isLookingLeft()) {
-      let bottle = new ThrowableBottle(this.character.x - 25, this.character.y + 100, "left");
+      let bottle = new ThrowableBottle(
+        this.character.x - 25,
+        this.character.y + 100,
+        "left"
+      );
       this.throwBottle(bottle);
     } else if (this.isBottleAvailabe()) {
-      let bottle = new ThrowableBottle(this.character.x + 100, this.character.y + 100, "right");
+      let bottle = new ThrowableBottle(
+        this.character.x + 100,
+        this.character.y + 100,
+        "right"
+      );
       this.throwBottle(bottle);
     }
   }
@@ -237,7 +251,7 @@ class World {
    * Respektiert ein globales Flag `isSoundMuted` (z. B. vom UI-Toggle).
    */
   playSound(sound) {
-    const muted = (typeof isSoundMuted !== "undefined") ? isSoundMuted : false;
+    const muted = typeof isSoundMuted !== "undefined" ? isSoundMuted : false;
     if (!muted) {
       try {
         // kurze Effekte resetten; Loops (z. B. Walking) lassen wir so
@@ -247,7 +261,9 @@ class World {
     } else {
       // Bei Mute auch die Musik zuverlässig stoppen
       if (!sound.paused) {
-        try { sound.pause(); } catch {}
+        try {
+          sound.pause();
+        } catch {}
       }
     }
   }
@@ -295,7 +311,7 @@ class World {
     this.level.endboss[0].hit(damage);
     this.level.endboss[0].hadFirstHit = true;
     this.level.endboss[0].speed = 15;
-    // defensiv: Endboss-Bar existiert evtl. nicht
+
     if (this.statusBar[3]) {
       this.statusBar[3].setPercentage(this.level.endboss[0].energy);
     }
