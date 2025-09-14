@@ -13,6 +13,16 @@ class Coin extends CollectableObject {
 
   constructor(x) {
     super().loadImages(this.IMAGES);
-    this.x = x;
+    this.x = x + Math.random() * 400;
+    this.y = 300 - Math.random() * 200;
+    this.animate();
+  }
+
+  /**
+   * The function uses setInterval to repeatedly call another function that plays an animation using a
+   * set of images.
+   */
+  animate() {
+    setInterval(() => this.playAnimation(this.IMAGES), 300);
   }
 }
