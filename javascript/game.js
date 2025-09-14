@@ -1,46 +1,105 @@
+/**
+ * @file game.js
+ * @overview Core UI and input glue code for initializing the game, handling
+ * device/orientation, keyboard/touch inputs, fullscreen mode, and global audio state.
+ * All logic remains unchanged; this file only provides documentation.
+ */
+
+/**
+ * @typedef {Object} Keyboard
+ * @property {boolean} KEY_RIGHT
+ * @property {boolean} KEY_LEFT
+ * @property {boolean} KEY_SPACE
+ * @property {boolean} KEY_D
+ * @property {boolean} KEY_M
+ * @property {boolean} KEY_ESC
+ */
+
+/**
+ * @typedef {Object} Level
+ * @property {Array<Object>} endboss
+ * @property {Array<Object>} collectableItems
+ */
+
+/**
+ * @typedef {Object} Character
+ * @property {HTMLAudioElement} [walking_sound]
+ * @property {HTMLAudioElement} [hurt_sound]
+ * @property {HTMLAudioElement} [dead_sound]
+ * @property {HTMLAudioElement} [jump_sound]
+ */
+
+/**
+ * @typedef {Object} World
+ * @property {Character} character
+ * @property {Level} level
+ * @property {boolean} gameWon
+ * @property {HTMLAudioElement} backgroundMusic
+ */
+
+/** @type {HTMLCanvasElement} */
 let canvas;
+/** @type {CanvasRenderingContext2D} */
 let ctx;
+/** @type {World} */
 let world;
+/** @type {Keyboard} */
 let keyboard = new Keyboard();
+/** @type {number[]} */
 let allIntervals = [];
+/** @type {string[]} */
 let gameOverScreens = [
   "img/9_intro_outro_screens/game_over/game over!.png",
   "img/9_intro_outro_screens/game_over/game over.png",
   "img/9_intro_outro_screens/game_over/oh no you lost!.png",
   "img/9_intro_outro_screens/game_over/you lost.png",
 ];
+/** Global mute flag for all game audio. */
 let isSoundMuted = false;
 
+/** Tracks whether DOM fullscreen is active. */
 let isFullScreen = false;
+/** Matches when device orientation is portrait. */
 let portrait = window.matchMedia("(orientation: portrait)");
 
-/** Hilfsfunktionen für Menü-Leiste **/
+/**
+ * Hides the top menu bar if present.
+ * @returns {void}
+ */
 function hideMenuBar() {
   const menu = document.querySelector(".menu-bar");
   if (menu) menu.classList.add("d-none");
 }
+
+/**
+ * Shows the top menu bar if present.
+ * @returns {void}
+ */
 function showMenuBar() {
   const menu = document.querySelector(".menu-bar");
   if (menu) menu.classList.remove("d-none");
 }
 
 /**
- * The function initializes the webpage by detecting mobile
- * devices, and setting up touch event listeners.
+ * Initializes input handling and mobile checks.
+ * Calls touch/keyboard bindings and desktop button listeners.
+ * @returns {void}
  */
 function init() {
   detectMobileDevice();
   touchStart();
   touchEnd();
-  bindClickButtons(); // Desktop-Click-Listener für Sound/Fullscreen
+  bindClickButtons();
 }
 
 /**
- * Desktop-Click-Listener für Sound/Fullscreen (ohne Touch).
+ * Binds desktop click handlers for sound toggle and fullscreen toggle.
+ * Uses synthetic keyboard flags for consistency with other input paths.
+ * @returns {void}
  */
 function bindClickButtons() {
   const btnSound = document.getElementById("btn-sound");
-  const btnFs = document.getElementById("btn-fullscreen");
+  const btnFs    = document.getElementById("btn-fullscreen");
 
   if (btnSound) {
     btnSound.addEventListener("click", (e) => {
@@ -62,8 +121,14 @@ function bindClickButtons() {
 }
 
 /**
- * The function starts the game by generating a level, showing the game UI, creating a canvas,
- * initializing a world object, and loading sound settings.
+ * Bootstraps a new game round:
+ * - generates level
+ * - shows UI and canvas
+ * - constructs {@link World}
+ * - loads and enforces audio settings
+ * - starts background music
+ * @fires HTMLMediaElement#play
+ * @returns {void}
  */
 function startGame() {
   generateLevel();
@@ -74,11 +139,10 @@ function startGame() {
   world = new World(canvas, keyboard, level1);
   loadSoundSettings();
 
-  // >>> Beim Start IMMER entmuten und Musik starten <<<
   isSoundMuted = false;
   muteAudioFiles(false);
   setSoundIcon();
-  saveAudioSetting(); // überschreibt evtl. altes "true" in localStorage
+  saveAudioSetting();
   try {
     world.backgroundMusic.currentTime = 0;
     world.backgroundMusic.play().catch(() => {});
@@ -86,38 +150,45 @@ function startGame() {
 }
 
 /**
- * The function reloads the game by hiding the end screen and starting the game again.
+ * Hides the end screen and restarts the game.
+ * @returns {void}
  */
 function reloadGame() {
-  document.getElementById("endscreen").classList.add("d-none");
-  startGame();
+  document.getElementById('endscreen').classList.add('d-none')
+  startGame()
 }
 
 /**
- * The function stops the game by clearing all intervals, hiding the canvas and game UI, pausing the background
- * music, and showing the end screen after a delay of 1 second.
+ * Stops the current game session:
+ * - clears intervals
+ * - hides canvas
+ * - pauses music
+ * - shows end screen after 1s
+ * @returns {void}
  */
 function stopGame() {
   clearAllIntervals();
   setTimeout(() => {
     document.getElementById("canvas").classList.add("d-none");
-    try {
-      world.backgroundMusic.pause();
-    } catch {}
+    try { world.backgroundMusic.pause(); } catch {}
     showEndScreen();
     resetLevel();
   }, 1000);
 }
 
 /**
- * The function clears all intervals set by the window object.
+ * Clears a broad range of interval ids.
+ * Note: aggressive clear for safety; does not track individual ids.
+ * @returns {void}
  */
 function clearAllIntervals() {
   for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
 
 /**
- * The function displays either a game won or game over screen and hides the game UI.
+ * Renders either the "game won" or a random "game over" screen,
+ * hides the in-game UI, and shows the menu bar.
+ * @returns {void}
  */
 function showEndScreen() {
   let endscreen = document.getElementById("endscreen");
@@ -128,11 +199,16 @@ function showEndScreen() {
   }
   hideGameUI();
   endscreen.classList.remove("d-none");
-  showMenuBar(); // <-- NEU: auf dem Endscreen die Menü-Buttons wieder anzeigen
+  showMenuBar();
 }
 
-// ---- Functions for keyboard usage ----
-
+/**
+ * Keyboard down event mapping for movement, actions, sound toggle and fullscreen leave.
+ * Prevents page scroll on Space.
+ * @listens window:keydown
+ * @param {KeyboardEvent} event
+ * @returns {void}
+ */
 window.addEventListener("keydown", (event) => {
   if (event.code == "ArrowRight") {
     keyboard.KEY_RIGHT = true;
@@ -141,7 +217,7 @@ window.addEventListener("keydown", (event) => {
     keyboard.KEY_LEFT = true;
   }
   if (event.code == "Space") {
-    event.preventDefault(); // verhindert Scrollen/Seite-Fokus frisst Space
+    event.preventDefault();
     keyboard.KEY_SPACE = true;
   }
   if (event.code == "KeyD") {
@@ -157,6 +233,13 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
+/**
+ * Keyboard up event mapping to release keys and possibly leave fullscreen.
+ * Prevents page scroll on Space.
+ * @listens window:keyup
+ * @param {KeyboardEvent} event
+ * @returns {void}
+ */
 window.addEventListener("keyup", (event) => {
   if (event.code == "ArrowRight") {
     keyboard.KEY_RIGHT = false;
@@ -175,17 +258,21 @@ window.addEventListener("keyup", (event) => {
     keyboard.KEY_M = false;
   }
   if (event.code == "Escape") {
-    // korrigiert von "KeyEscape"
     keyboard.KEY_ESC = false;
     leaveFullscreen();
   }
 });
 
+/**
+ * Reacts to device orientation changes to show/hide rotation hints.
+ * @listens MediaQueryList#change
+ * @returns {void}
+ */
 portrait.addEventListener("change", () => checkMobileOrientation());
 
 /**
- * The function detects if the device accessing the website has a small screen size and calls another
- * function to check its orientation if it is a mobile device.
+ * Detects small-screen devices and triggers orientation check.
+ * @returns {void}
  */
 function detectMobileDevice() {
   if (window.innerWidth < 500 && window.innerHeight < 900) {
@@ -194,8 +281,8 @@ function detectMobileDevice() {
 }
 
 /**
- * The function checks the orientation of a mobile device and displays or hides certain elements based
- * on whether it is in portrait or landscape mode.
+ * Toggles rotation alert and control description depending on portrait/landscape.
+ * @returns {void}
  */
 function checkMobileOrientation() {
   if (portrait.matches) {
@@ -208,7 +295,8 @@ function checkMobileOrientation() {
 }
 
 /**
- * The function adds touch event listeners to buttons and updates the keyboard object accordingly.
+ * Registers touchstart handlers for movement and actions, including sound and fullscreen toggles.
+ * @returns {void}
  */
 function touchStart() {
   document.getElementById("btn-left").addEventListener("touchstart", (e) => {
@@ -232,18 +320,16 @@ function touchStart() {
     toggleSound();
     e.preventDefault();
   });
-  document
-    .getElementById("btn-fullscreen")
-    .addEventListener("touchstart", (e) => {
-      keyboard.KEY_ESC = true;
-      toggleFullscreen();
-      e.preventDefault();
-    });
+  document.getElementById("btn-fullscreen").addEventListener("touchstart", (e) => {
+    keyboard.KEY_ESC = true;
+    toggleFullscreen();
+    e.preventDefault();
+  });
 }
 
 /**
- * The function sets event listeners for touch end events on specific buttons and updates corresponding
- * keyboard keys to false.
+ * Registers touchend handlers to release keys for all touch buttons.
+ * @returns {void}
  */
 function touchEnd() {
   document.getElementById("btn-left").addEventListener("touchend", (e) => {
@@ -262,21 +348,21 @@ function touchEnd() {
     keyboard.KEY_D = false;
     e.preventDefault();
   });
-  // KORREKTUR: vorher versehentlich "touchstart"
   document.getElementById("btn-sound").addEventListener("touchend", (e) => {
     keyboard.KEY_M = false;
     e.preventDefault();
   });
-  document
-    .getElementById("btn-fullscreen")
-    .addEventListener("touchend", (e) => {
-      keyboard.KEY_ESC = false;
-      e.preventDefault();
-    });
+  document.getElementById("btn-fullscreen").addEventListener("touchend", (e) => {
+    keyboard.KEY_ESC = false;
+    e.preventDefault();
+  });
 }
 
-// ---- Functions for fullscreen functionality ----
-
+/**
+ * Toggles fullscreen mode for the canvas/endscreen container.
+ * Also hides/shows the menu bar appropriately.
+ * @returns {void}
+ */
 function toggleFullscreen() {
   let fullscreen = document.getElementById("fullscreen");
   if (!isFullScreen) {
@@ -285,13 +371,17 @@ function toggleFullscreen() {
     document.getElementById("mainheadline").classList.add("d-none");
     enterFullscreen(fullscreen);
     isFullScreen = true;
-
-    hideMenuBar(); // <-- NEU: im Vollbild immer ausblenden
+    hideMenuBar();
   } else {
     leaveFullscreen();
   }
 }
 
+/**
+ * Requests DOM fullscreen on a given element.
+ * @param {HTMLElement} element
+ * @returns {void}
+ */
 function enterFullscreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
@@ -302,6 +392,10 @@ function enterFullscreen(element) {
   }
 }
 
+/**
+ * Exits DOM fullscreen mode (vendor-prefixed fallback included).
+ * @returns {void}
+ */
 function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
@@ -310,14 +404,28 @@ function exitFullscreen() {
   }
 }
 
+/**
+ * Ensures we leave fullscreen cleanly when the browser reports a fullscreenchange.
+ * @listens document:fullscreenchange
+ * @returns {void}
+ */
 document.addEventListener("fullscreenchange", fullscreenchangelog);
 
+/**
+ * Leaves fullscreen if no element is currently in fullscreen.
+ * @returns {void}
+ */
 function fullscreenchangelog() {
   if (!document.fullscreenElement) {
     leaveFullscreen();
   }
 }
 
+/**
+ * Cleans up DOM classes and menu visibility upon leaving fullscreen.
+ * Shows menu bar if canvas is hidden or endscreen is visible.
+ * @returns {void}
+ */
 function leaveFullscreen() {
   if (isFullScreen) {
     document.getElementById("canvas").classList.remove("fullscreen");
@@ -325,14 +433,8 @@ function leaveFullscreen() {
     document.getElementById("mainheadline").classList.remove("d-none");
     isFullScreen = false;
   }
-
-  // Nach Vollbild verlassen: Nur anzeigen, wenn kein Spiel läuft (Canvas verborgen) oder Endscreen sichtbar ist.
-  const canvasHidden = document
-    .getElementById("canvas")
-    .classList.contains("d-none");
-  const onEndscreen = !document
-    .getElementById("endscreen")
-    .classList.contains("d-none");
+  const canvasHidden = document.getElementById("canvas").classList.contains("d-none");
+  const onEndscreen  = !document.getElementById("endscreen").classList.contains("d-none");
   if (canvasHidden || onEndscreen) {
     showMenuBar();
   } else {
@@ -340,8 +442,10 @@ function leaveFullscreen() {
   }
 }
 
-// ---- Functions for audio ----
-
+/**
+ * Flips the global mute state, applies it to all audio, updates icon and persists setting.
+ * @returns {void}
+ */
 function toggleSound() {
   isSoundMuted = !isSoundMuted;
   muteAudioFiles(isSoundMuted);
@@ -349,6 +453,10 @@ function toggleSound() {
   saveAudioSetting();
 }
 
+/**
+ * Updates the sound icon depending on {@link isSoundMuted}.
+ * @returns {void}
+ */
 function setSoundIcon() {
   let soundicon = document.getElementById("soundicon");
   if (isSoundMuted) {
@@ -358,51 +466,62 @@ function setSoundIcon() {
   }
 }
 
+/**
+ * Persists the current mute state in localStorage.
+ * @returns {void}
+ */
 function saveAudioSetting() {
   localStorage.setItem("isEPLSoundMuted", isSoundMuted);
 }
 
+/**
+ * Initializes {@link isSoundMuted} from localStorage, defaulting to false.
+ * @returns {void}
+ */
 function initSoundSettings() {
   let initsound = localStorage.getItem("isEPLSoundMuted");
   if (initsound === null) {
     isSoundMuted = false;
   } else {
-    isSoundMuted = initsound === "true";
+    isSoundMuted = (initsound === "true");
   }
 }
 
+/**
+ * Loads and applies stored audio settings and updates the icon.
+ * @returns {void}
+ */
 function loadSoundSettings() {
   initSoundSettings();
   muteAudioFiles(isSoundMuted);
   setSoundIcon();
 }
 
+/**
+ * Mutes/unmutes all relevant audio sources across world, character, enemies and collectables.
+ * Also starts/stops background music accordingly.
+ * @param {boolean} boolean - True to mute, false to unmute.
+ * @returns {void}
+ */
 function muteAudioFiles(boolean) {
   if (!world) return;
 
-  // Character
   if (world.character) {
-    if (world.character.walking_sound)
-      world.character.walking_sound.muted = boolean;
-    if (world.character.hurt_sound) world.character.hurt_sound.muted = boolean;
-    if (world.character.dead_sound) world.character.dead_sound.muted = boolean;
-    if (world.character.jump_sound) world.character.jump_sound.muted = boolean;
+    if (world.character.walking_sound) world.character.walking_sound.muted = boolean;
+    if (world.character.hurt_sound)    world.character.hurt_sound.muted    = boolean;
+    if (world.character.dead_sound)    world.character.dead_sound.muted    = boolean;
+    if (world.character.jump_sound)    world.character.jump_sound.muted    = boolean;
   }
 
-  // World / Enemies / Endboss / Music
   if (world.chickenHurt_sound) world.chickenHurt_sound.muted = boolean;
-  if (world.backgroundMusic) {
-    world.backgroundMusic.muted = boolean;
-    if (boolean) {
-      try {
-        world.backgroundMusic.pause();
-      } catch (e) {}
-    } else {
-      try {
-        world.backgroundMusic.play().catch(() => {});
-      } catch (e) {}
-    }
+if (world.backgroundMusic) {
+  world.backgroundMusic.muted = boolean;
+  if (boolean) {
+    try { world.backgroundMusic.pause(); } catch (e) {}
+  } else {
+    try { world.backgroundMusic.play().catch(() => {}); } catch (e) {}
   }
+}
 
   if (world.level && world.level.endboss && world.level.endboss[0]) {
     if (world.level.endboss[0].endbossDead_sound) {
@@ -410,7 +529,6 @@ function muteAudioFiles(boolean) {
     }
   }
 
-  // Collectables
   if (world.level && Array.isArray(world.level.collectableItems)) {
     for (let i = 0; i < world.level.collectableItems.length; i++) {
       const item = world.level.collectableItems[i];
@@ -421,7 +539,11 @@ function muteAudioFiles(boolean) {
   }
 }
 
-/* ==== Start-Button & Initialisierung ==== */
+/**
+ * Entry point after DOM is ready.
+ * @listens document:DOMContentLoaded
+ * @returns {void}
+ */
 document.addEventListener("DOMContentLoaded", () => {
   init();
 });
