@@ -69,7 +69,7 @@ function startGame() {
   isSoundMuted = false;
   muteAudioFiles(false);
   setSoundIcon();
-  saveAudioSetting();
+  saveAudioSetting(); // überschreibt evtl. altes "true" in localStorage
   try {
     world.backgroundMusic.currentTime = 0;
     world.backgroundMusic.play().catch(() => {});
@@ -104,7 +104,7 @@ function showEndScreen() {
   }
   hideGameUI();
   endscreen.classList.remove("d-none");
-  showMenuBar();
+  showMenuBar(); // <-- NEU: auf dem Endscreen die Menü-Buttons wieder anzeigen
 }
 
 // ---- Functions for keyboard usage ----
@@ -229,6 +229,67 @@ function touchEnd() {
     keyboard.KEY_ESC = false;
     e.preventDefault();
   });
+}
+
+// ---- Functions for fullscreen functionality ----
+
+function toggleFullscreen() {
+  let fullscreen = document.getElementById("fullscreen");
+  if (!isFullScreen) {
+    document.getElementById("canvas").classList.add("fullscreen");
+    document.getElementById("endscreen").classList.add("fullscreen");
+    document.getElementById("mainheadline").classList.add("d-none");
+    enterFullscreen(fullscreen);
+    isFullScreen = true;
+
+    hideMenuBar(); // <-- NEU: im Vollbild immer ausblenden
+  } else {
+    leaveFullscreen();
+  }
+}
+
+function enterFullscreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  }
+}
+
+function exitFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
+}
+
+document.addEventListener("fullscreenchange", fullscreenchangelog);
+
+function fullscreenchangelog() {
+  if (!document.fullscreenElement) {
+    leaveFullscreen();
+  }
+}
+
+function leaveFullscreen() {
+  if (isFullScreen) {
+    document.getElementById("canvas").classList.remove("fullscreen");
+    document.getElementById("endscreen").classList.remove("fullscreen");
+    document.getElementById("mainheadline").classList.remove("d-none");
+    isFullScreen = false;
+  }
+
+  // Nach Vollbild verlassen: Nur anzeigen, wenn kein Spiel läuft (Canvas verborgen) oder Endscreen sichtbar ist.
+  const canvasHidden = document.getElementById("canvas").classList.contains("d-none");
+  const onEndscreen  = !document.getElementById("endscreen").classList.contains("d-none");
+  if (canvasHidden || onEndscreen) {
+    showMenuBar();
+  } else {
+    hideMenuBar();
+  }
 }
 
 /* ==== Start-Button & Initialisierung ==== */
