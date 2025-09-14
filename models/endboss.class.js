@@ -58,5 +58,31 @@ class Endboss extends MovableObject {
 
     this.x = end_of_level_x + 250;
     this.speed = 10;
+
+    this.animate();
+  }
+
+  /**
+   * The function animates the endboss character and displays its health bar when the player character
+   * comes within a certain distance.
+   */
+  animate() {
+    let i;
+    let hadFirstContact = false;
+    let endbossHealthbar = new EndBossBar();
+    
+
+    setInterval(() => {
+      if (world.character.x > this.x - 500 && !hadFirstContact) {
+        i = 0;
+        hadFirstContact = true;
+        world.statusBar.push(endbossHealthbar);
+      }
+      this.playEndbossAnimationLoop(i);
+      if (i === 65) {
+        i = 25; // resets endboss' alert/attack animation loop
+      }
+      i++;
+    }, 100);
   }
 }
