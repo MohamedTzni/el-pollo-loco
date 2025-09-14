@@ -104,6 +104,10 @@ class Pepe extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Lädt alle Bild-Arrays für die Animationen.
+   * @private
+   */
   loadAllImages() {
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_WALKING);
@@ -113,6 +117,10 @@ class Pepe extends MovableObject {
     this.loadImages(this.IMAGES_LONGIDLE);
   }
 
+  /**
+   * Konfiguriert die Sound-Eigenschaften.
+   * @private
+   */
   configureSounds() {
     this.walking_sound.playbackRate = 2;
     this.hurt_sound.playbackRate = 2;
@@ -121,42 +129,14 @@ class Pepe extends MovableObject {
     this.dead_sound.volume = 0.3;
   }
 
+  /**
+   * Startet die Animations-Intervalle.
+   * @private
+   */
   animate() {
     setInterval(() => this.moveCharacter(), 1000 / 60);
     setInterval(() => this.playCharacterAnimations(), 8000 / 60);
   }
-
-  moveCharacter() {}
-  playCharacterAnimations() {}
-  handleDeath() {}
-  endGame() {}
-  handleHurt() {}
-  handleMovement() {}
-  handleIdle() {}
-  canMoveRight() { return false; }
-  moveRight() {}
-  canMoveLeft() { return false; }
-  moveLeft() {}
-  isLookingLeft() { return this.flippedGraphics; }
-  isMoving() { return false; }
-  canJump() { return false; }
-  updateLastMoveTime() { this.lastMoveTime = Date.now(); }
-  playDyingAnimation() {}
-}
-/* ... gleicher Header wie oben ... */
-class Pepe extends MovableObject {
-  /* Eigenschaften, Images, Sounds, Tracking wie in Commit 1 ... */
-
-  constructor() {
-    super();
-    this.loadAllImages();
-    this.loadImage(this.IMAGES_IDLE[0]);
-    this.configureSounds();
-    this.applyGravity();
-    this.animate();
-  }
-
-  /* loadAllImages(), configureSounds(), animate() wie zuvor ... */
 
   /**
    * Bewegt den Charakter basierend auf Tastatureingaben.
@@ -176,6 +156,83 @@ class Pepe extends MovableObject {
 
     this.world.camera_x = -this.x + 75;
   }
+
+  /**
+   * Spielt die entsprechenden Animationen basierend auf dem Zustand des Charakters.
+   * @private
+   */
+  playCharacterAnimations() {
+    if (this.isDead && typeof this.isDead === 'function' ? this.isDead() : this.energy <= 0) {
+      this.handleDeath();
+    } else if (this.isHurt && this.isHurt()) {
+      this.handleHurt();
+    } else if (this.isAboveGround && this.isAboveGround()) {
+      this.playAnimation(this.IMAGES_JUMPING);
+    } else if (this.isMoving()) {
+      this.handleMovement();
+    } else {
+      this.handleIdle();
+    }
+  }
+
+  /**
+   * Behandelt den Tod des Charakters (einmalig).
+   * @private
+   */
+  handleDeath() {
+    if (this.deathHandled) return;
+    this.deathHandled = true;
+
+    this.playDyingAnimation();
+    this.hurt_sound.pause();
+    this.walking_sound.pause();
+    this.walking_sound.currentTime = 0;
+    this.world.playSound(this.dead_sound);
+
+    this.endGame(); // leitet auf stopGame() um
+  }
+
+  /**
+   * Endscreen/Spielende anstoßen.
+   */
+  endGame() {
+    if (this.world && typeof stopGame === 'function') {
+      stopGame();
+    }
+  }
+
+  /**
+   * Behandelt den Verletzungszustand des Charakters.
+   * @private
+   */
+  handleHurt() {
+    this.hurt_sound.pause();
+    this.playAnimation(this.IMAGES_HURT);
+  }
+
+  /**
+   * Behandelt die Bewegungsanimation des Charakters.
+   * @private
+   */
+  handleMovement() {
+    this.playAnimation(this.IMAGES_WALKING);
+    this.y = this.ground;
+  }
+
+  /**
+   * Behandelt die Idle-Animation basierend auf Inaktivitätsdauer.
+   * @private
+   */
+  handleIdle() {
+    const now = Date.now();
+    if (now - this.lastMoveTime > this.idleTimeoutMs) {
+      this.playAnimation(this.IMAGES_LONGIDLE);
+    } else {
+      this.playAnimation(this.IMAGES_IDLE);
+    }
+  }
+
+  // ---- Bewegungsfunktionen ----
 
   canMoveRight() {
     return (
@@ -201,18 +258,32 @@ class Pepe extends MovableObject {
     this.updateLastMoveTime();
   }
 
-  isLookingLeft() { return this.flippedGraphics; }
-  isMoving() { return this.world.keyboard.KEY_RIGHT || this.world.keyboard.KEY_LEFT; }
-  canJump() { return this.world.keyboard.KEY_SPACE && !this.isAboveGround(); }
+  isLookingLeft() {
+    return this.flippedGraphics;
+  }
 
-  updateLastMoveTime() { this.lastMoveTime = Date.now(); }
+  isMoving() {
+    return this.world.keyboard.KEY_RIGHT || this.world.keyboard.KEY_LEFT;
+  }
 
-  /* Platzhalter-Methoden bleiben, werden in nächsten Commits gefüllt */
-  playCharacterAnimations() {}
-  handleDeath() {}
-  endGame() {}
-  handleHurt() {}
-  handleMovement() {}
-  handleIdle() {}
-  playDyingAnimation() {}
+  canJump() {
+    return this.world.keyboard.KEY_SPACE && !this.isAboveGround();
+  }
+
+  updateLastMoveTime() {
+    this.lastMoveTime = Date.now();
+  }
+
+  /**
+   * Spielt die Sterbeanimation des Charakters (einmalige Sequenz).
+   */
+  playDyingAnimation() {
+    this.playAnimation(this.IMAGES_DEAD);
+    setTimeout(() => {
+      this.moveUp(30);
+      setTimeout(() => {
+        this.moveDown(150);
+      }, 1000);
+    }, 1000);
+  }
 }
