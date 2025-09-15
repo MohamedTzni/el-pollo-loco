@@ -11,10 +11,10 @@ class World {
   collectedCoins = 0;
 
   // --- Audio ---
-  backgroundMusic = new Audio("audio/background.mp3");
-  chickenHurt_sound = new Audio("audio/chickenouch.wav");
-  coin_sound = new Audio("audio/collect_coin.wav");
-  bottle_pickup_sound = new Audio("audio/collect_bottle.wav");
+  backgroundMusic = new Audio("./audio/background.mp3");
+  chickenHurt_sound = new Audio("./audio/chickenouch.wav");
+  coin_sound = new Audio("./audio/collect_coin.wav");
+  bottle_pickup_sound = new Audio("./audio/collect_bottle.wav");
 
   gameWon = false;
 
@@ -23,8 +23,10 @@ class World {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.level = level;
-    this.draw();
+
+    // Reihenfolge-Fix: erst Welt setzen, dann zeichnen/laufen lassen
     this.setWorld();
+    this.draw();
     this.run();
   }
 
@@ -36,6 +38,9 @@ class World {
     this.setAudio();
   }
 
+  /**
+   * Loops for collisions, collection and throw checks.
+   */
   run() {
     setInterval(() => {
       this.checkCollisions();
@@ -105,9 +110,15 @@ class World {
     return array.indexOf(item, 0);
   }
 
+  /**
+   * Nur „von oben“: Unterkante des Charakters liegt (mit Toleranz) über Oberkante des Gegners.
+   */
   isJumpingOnEnemy(enemy) {
     if (!this.character.isColliding(enemy)) return false;
-    const charBottom = this.character.y + this.character.height - this.character.offset.bottom;
+    const charBottom =
+      this.character.y +
+      this.character.height -
+      this.character.offset.bottom;
     const enemyTop = enemy.y + enemy.offset.top;
     // kleine Toleranz von 10px, damit knappe Top-Down-Kontakte zählen
     return charBottom <= enemyTop + 10;
@@ -200,7 +211,11 @@ class World {
   }
 
   characterCanGetDamage(enemy) {
-    return !this.character.isAboveGround() && enemy.isAlive && !this.character.invulnerable;
+    return (
+      !this.character.isAboveGround() &&
+      enemy.isAlive &&
+      !this.character.invulnerable
+    );
   }
 
   draw() {
