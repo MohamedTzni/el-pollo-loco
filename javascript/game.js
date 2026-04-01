@@ -24,13 +24,15 @@ function showMenuBar() {
   if (menu) menu.classList.remove("d-none");
 }
 
-// ---- Functions start here ----ich werde dir nach und nach
+// ---- Functions start here ----
 
 /**
  * The function initializes the webpage by detecting mobile
  * devices, and setting up touch event listeners.
  */
 function init() {
+  initSoundSettings();
+  setSoundIcon();
   detectMobileDevice();
   touchStart();
   touchEnd();
@@ -68,23 +70,13 @@ function bindClickButtons() {
  * initializing a world object, and loading sound settings.
  */
 function startGame() {
-  generateLevel();
+  level1 = resetLevel();
   showGameUI();
   hideMenuBar();
   canvas = document.getElementById("canvas");
   canvas.classList.remove("d-none");
-  world = new World(canvas, keyboard, level1);
+  world = new World(canvas, keyboard);
   loadSoundSettings();
-
-  // >>> Beim Start IMMER entmuten und Musik starten <<<
-  isSoundMuted = false;
-  muteAudioFiles(false);
-  setSoundIcon();
-  saveAudioSetting(); // überschreibt evtl. altes "true" in localStorage
-  try {
-    world.backgroundMusic.currentTime = 0;
-    world.backgroundMusic.play().catch(() => {});
-  } catch (e) {}
 }
 
 /**
@@ -274,10 +266,22 @@ function touchEnd() {
 
 function toggleFullscreen() {
   let fullscreen = document.getElementById("fullscreen");
+  let body = document.body;
+  let canvasEl = document.getElementById("canvas");
+
   if (!isFullScreen) {
-    document.getElementById("canvas").classList.add("fullscreen");
+    fullscreen.classList.add("fullscreen");
+    body.classList.add("fullscreen-enabled");
+    canvasEl.classList.add("fullscreen");
     document.getElementById("endscreen").classList.add("fullscreen");
     document.getElementById("mainheadline").classList.add("d-none");
+
+    canvasEl.width = window.innerWidth;
+    canvasEl.height = window.innerHeight;
+    canvasEl.style.width = "100vw";
+    canvasEl.style.height = "100vh";
+    canvasEl.style.objectFit = "fill";
+
     enterFullscreen(fullscreen);
     isFullScreen = true;
 
@@ -286,6 +290,17 @@ function toggleFullscreen() {
     leaveFullscreen();
   }
 }
+
+window.addEventListener("resize", () => {
+  if (isFullScreen) {
+    const canvasEl = document.getElementById("canvas");
+    if (!canvasEl) return;
+    canvasEl.width = window.innerWidth;
+    canvasEl.height = window.innerHeight;
+    canvasEl.style.width = "100vw";
+    canvasEl.style.height = "100vh";
+  }
+});
 
 function enterFullscreen(element) {
   if (element.requestFullscreen) {
@@ -315,9 +330,21 @@ function fullscreenchangelog() {
 
 function leaveFullscreen() {
   if (isFullScreen) {
-    document.getElementById("canvas").classList.remove("fullscreen");
+    let fullscreen = document.getElementById("fullscreen");
+    fullscreen.classList.remove("fullscreen");
+    document.body.classList.remove("fullscreen-enabled");
+    let canvasEl = document.getElementById("canvas");
+    canvasEl.classList.remove("fullscreen");
     document.getElementById("endscreen").classList.remove("fullscreen");
     document.getElementById("mainheadline").classList.remove("d-none");
+
+    // Rücksetzung der Style-Änderungen
+    canvasEl.style.width = "100%";
+    canvasEl.style.height = "auto";
+    canvasEl.style.objectFit = "initial";
+
+    canvasEl.width = 720;
+    canvasEl.height = 480;
     isFullScreen = false;
   }
 
@@ -342,6 +369,7 @@ function toggleSound() {
 
 function setSoundIcon() {
   let soundicon = document.getElementById("soundicon");
+  if (!soundicon) return;
   if (isSoundMuted) {
     soundicon.src = "./img/1_controls/muted.png";
   } else {
@@ -381,6 +409,7 @@ function muteAudioFiles(boolean) {
 
   // World / Enemies / Endboss / Music
   if (world.chickenHurt_sound) world.chickenHurt_sound.muted = boolean;
+  if (world.throwBottle_sound) world.throwBottle_sound.muted = boolean;
 if (world.backgroundMusic) {
   world.backgroundMusic.muted = boolean;
   if (boolean) {
@@ -390,19 +419,21 @@ if (world.backgroundMusic) {
   }
 }
 
-  if (world.level && world.level.endboss && world.level.endboss[0]) {
-    if (world.level.endboss[0].endbossDead_sound) {
-      world.level.endboss[0].endbossDead_sound.muted = boolean;
-    }
+  const endboss = world.level?.enemies?.find((enemy) => enemy instanceof Endboss);
+  if (endboss?.endbossDead_sound) {
+    endboss.endbossDead_sound.muted = boolean;
   }
 
   // Collectables
-  if (world.level && Array.isArray(world.level.collectableItems)) {
-    for (let i = 0; i < world.level.collectableItems.length; i++) {
-      const item = world.level.collectableItems[i];
-      if (item && item.collect_sound) {
-        item.collect_sound.muted = boolean;
-      }
+  const collectables = [
+    ...(world.level?.bottles || []),
+    ...(world.level?.coins || []),
+  ];
+
+  for (let i = 0; i < collectables.length; i++) {
+    const item = collectables[i];
+    if (item && item.collect_sound) {
+      item.collect_sound.muted = boolean;
     }
   }
 }
@@ -411,3 +442,4 @@ if (world.backgroundMusic) {
 document.addEventListener("DOMContentLoaded", () => {
   init();
 });
+

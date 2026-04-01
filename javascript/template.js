@@ -1,5 +1,9 @@
 function isTouchDevice(){ return ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }
 
+function shouldShowMobileControls() {
+  return isTouchDevice() || window.innerWidth <= 914;
+}
+
 function showCanvasSection() {
   return /*html*/ `
   <section id="canvas-section" class="flex-center">
@@ -25,11 +29,15 @@ function showGameUI() {
   document.getElementById("infobtn").classList.add("d-none");
   document.getElementById("btn-fullscreen").classList.remove("d-none");
   document.getElementById("btn-sound").classList.remove("d-none");
-  if (isTouchDevice()) {
+  if (shouldShowMobileControls()) {
     document.getElementById("btn-left").classList.remove("d-none");
+    document.getElementById("btn-left").classList.remove("hide");
     document.getElementById("btn-right").classList.remove("d-none");
+    document.getElementById("btn-right").classList.remove("hide");
     document.getElementById("btn-jump").classList.remove("d-none");
+    document.getElementById("btn-jump").classList.remove("hide");
     document.getElementById("btn-throw").classList.remove("d-none");
+    document.getElementById("btn-throw").classList.remove("hide");
   }
 }
 
@@ -113,4 +121,32 @@ function showWinScreen() {
       </div>
     </section>
 `;
+}
+
+function hideGameUI() {
+  document.getElementById("controlsdescription").classList.add("d-none");
+  document.getElementById("btn-fullscreen").classList.add("d-none");
+  document.getElementById("btn-sound").classList.add("d-none");
+  document.getElementById("btn-left").classList.add("d-none");
+  document.getElementById("btn-left").classList.add("hide");
+  document.getElementById("btn-right").classList.add("d-none");
+  document.getElementById("btn-right").classList.add("hide");
+  document.getElementById("btn-jump").classList.add("d-none");
+  document.getElementById("btn-jump").classList.add("hide");
+  document.getElementById("btn-throw").classList.add("d-none");
+  document.getElementById("btn-throw").classList.add("hide");
+}
+
+function renderGameWonScreen() {
+  return `<img src="./img/9_intro_outro_screens/game_over/you won.png" alt="You won!" style="width: 100%; height: auto; display: block;"><div style="position: absolute; bottom: 60px; width: 100%; text-align: center;"><button onclick="reloadGame()" class="button" style="margin: 0 auto 10px; display: block;">Play Again</button><button onclick="backToStart()" class="button" style="margin: 0 auto; display: block;">Back to Start</button></div>`;
+}
+
+function renderRandomGameOverScreen() {
+  const gameOverScreens = ["img/9_intro_outro_screens/game_over/game over!.png", "img/9_intro_outro_screens/game_over/game over.png", "img/9_intro_outro_screens/game_over/oh no you lost!.png", "img/9_intro_outro_screens/game_over/you lost.png"];
+  let randomScreen = gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
+  return `<img src="./${randomScreen}" alt="Game Over" style="width: 100%; height: auto; display: block;"><div style="position: absolute; bottom: 60px; width: 100%; text-align: center;"><button onclick="reloadGame()" class="button" style="margin: 0 auto 10px; display: block;">Try Again</button><button onclick="backToStart()" class="button" style="margin: 0 auto; display: block;">Back to Start</button></div>`;
+}
+
+function backToStart() {
+  location.reload();
 }

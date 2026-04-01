@@ -28,25 +28,12 @@ class DrawableObject {
   }
 
   /**
-   * The function draws a blue rectangular frame around certain game objects.
-   * @param ctx - ctx stands for "context" and refers to the canvas context on which the frame is being
-   * drawn. It is an object that provides methods and properties for drawing on the canvas.
+   * The function draws a debug frame around game objects.
+   * In production gameplay, this is disabled to remove the blue borders.
    */
   drawFrame(ctx) {
-    if (
-      this instanceof Pepe ||
-      this instanceof Chicken ||
-      this instanceof Smallchicken ||
-      this instanceof Endboss ||
-      this instanceof Coin ||
-      this instanceof Bottle
-    ) {
-      ctx.beginPath();
-      ctx.lineWidth = "1";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
+    // no frame in final game:
+    return;
   }
 
   /**
