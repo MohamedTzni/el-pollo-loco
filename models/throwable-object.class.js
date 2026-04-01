@@ -1,10 +1,10 @@
 class ThrowableObject extends MovableObject {
   isBroken = false;
+  throwInterval;
+  animationInterval;
 
   constructor() {
     super();
-    this.throw();
-    this.animate();
   }
 
   /**
@@ -13,13 +13,15 @@ class ThrowableObject extends MovableObject {
    * "left".
    */
   throw(direction) {
+    this.speedY = 25;
     this.applyGravity();
+    if (this.throwInterval) clearInterval(this.throwInterval);
     if (direction === "right") {
-      setInterval(() => {
+      this.throwInterval = setInterval(() => {
         this.x += 15;
       }, 25);
     } else if (direction === "left") {
-      setInterval(() => {
+      this.throwInterval = setInterval(() => {
         this.x -= 15;
       }, 25);
     }
@@ -33,7 +35,8 @@ class ThrowableObject extends MovableObject {
   remove the object from the game or reset it to its initial state. */
   removeObject() {
     this.speedY = 0;
-    this.acceleration = -0.1;
+    this.acceleration = 0;
     this.y = this.ground;
+    if (this.throwInterval) clearInterval(this.throwInterval);
   }
 }

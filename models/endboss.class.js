@@ -2,6 +2,7 @@ class Endboss extends MovableObject {
   y = 135;
   height = 300;
   width = 280;
+  energy = 25;
   offset = {
     top: 50,
     bottom: 65,
@@ -47,8 +48,9 @@ class Endboss extends MovableObject {
   ];
   endbossDead_sound = new Audio("./audio/win.wav");
   hadFirstHit = false;
+  hadFirstContact = false;
 
-  constructor() {
+  constructor(x = 3600) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_ALERT);
@@ -56,10 +58,35 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
 
-    this.x = end_of_level_x + 250;
-    this.speed = 10;
+    this.x = x;
+    this.speed = 1.2;
 
     this.animate();
+  }
+
+  /**
+   * Handles boss damage separately from the default character damage logic.
+   * The boss should take small, frequent bottle hits instead of using Pepe's long hit cooldown.
+   * @returns {boolean} True when the hit was accepted.
+   */
+  hit() {
+    const now = new Date().getTime();
+    if (now - this.lastHit < 200 || this.isDead()) {
+      return false;
+    }
+
+    this.lastHit = now;
+    this.energy -= 5;
+    this.hadFirstHit = true;
+
+    if (this.energy <= 0) {
+      this.energy = 0;
+      if (this.world) {
+        this.world.playSound(this.endbossDead_sound);
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -67,23 +94,35 @@ class Endboss extends MovableObject {
    * comes within a certain distance.
    */
   animate() {
-    let i;
-    let hadFirstContact = false;
-    let endbossHealthbar = new EndBossBar();
-    
+    setInterval(() => {
+      if (!this.character || !this.hadFirstContact || this.isDead()) return;
+      if (this.character.x < this.x - 120) {
+        this.moveLeft();
+      }
+    }, 1000 / 60);
 
     setInterval(() => {
-      if (world.character.x > this.x - 500 && !hadFirstContact) {
-        i = 0;
-        hadFirstContact = true;
-        world.statusBar.push(endbossHealthbar);
+      if (!this.character) return;
+
+      if (this.character.x > this.x - 500 && !this.hadFirstContact) {
+        this.hadFirstContact = true;
+        if (this.world) {
+          this.world.showEndbossStatusBar = true;
+        }
       }
-      this.playEndbossAnimationLoop(i);
-      if (i === 65) {
-        i = 25; // resets endboss' alert/attack animation loop
+
+      if (!this.hadFirstContact) return;
+
+      if (this.isDead()) {
+        this.playEndbossDying();
+      } else if (this.isHurt()) {
+        this.playAnimation(this.IMAGES_HURT);
+      } else if (this.hadFirstHit) {
+        this.playAnimation(this.IMAGES_ATTACK);
+      } else {
+        this.playAnimation(this.IMAGES_WALKING);
       }
-      i++;
-    }, 100);
+    }, 180);
   }
 
   /**
@@ -91,10 +130,13 @@ class Endboss extends MovableObject {
    */
   playEndbossGotHit() {
     if (this.isDead()) {
-      world.playSound(this.endbossDead_sound);
+      if (this.world) {
+        this.world.gameWon = true;
+      }
       this.playEndbossDying();
-      world.gameWon = true;
-      this.endGame();
+      if (this.world) {
+        this.world.endGame();
+      }
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
     }
@@ -115,43 +157,5 @@ class Endboss extends MovableObject {
    * "playEndbossAnimationLoop" function. It is likely used as a counter or timer to control the timing
    * and sequence of the different animations.
    */
-  playEndbossAnimationLoop(i) {
-    if (this.hadFirstHit) {
-      this.playEndbossAttack();
-    } else if (i < 25) {
-      this.playEndBossWalk();
-    } else if (i > 25 && i < 45) {
-      this.playEndbossAlert();
-    } else if (i > 45) {
-      this.playEndbossAttack();
-    }
-  }
-
-  /**
-   * The function makes the end boss character move left, play a walking animation, and trigger a "got
-   * hit" animation.
-   */
-  playEndBossWalk() {
-    this.moveLeft();
-    this.playAnimation(this.IMAGES_WALKING);
-    this.playEndbossGotHit();
-  }
-
-  /**
-   * The function plays an animation and triggers the "endboss got hit" event.
-   */
-  playEndbossAlert() {
-    this.playAnimation(this.IMAGES_ALERT);
-    this.playEndbossGotHit();
-  }
-
-  /**
-   * The function makes the endboss move left, play an attack animation, and then play a got hit
-   * animation.
-   */
-  playEndbossAttack() {
-    this.moveLeft();
-    this.playAnimation(this.IMAGES_ATTACK);
-    this.playEndbossGotHit();
-  }
+  playEndbossAnimationLoop() {}
 }

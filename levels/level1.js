@@ -1,160 +1,64 @@
-const levelLength = 6; // Defines the background width and amount of background elements, also the amount of enemies and collectable items;
-
-// Enemy elements
-const amountEndboss = 1;
-const amountEnemies = levelLength;
-let enemies = [];
-let endboss = [];
-
-//Background Elements
-const backgroundImg = [
-  "img/5_background/layers/air.png",
-  "img/5_background/layers/3_third_layer/2.png",
-  "img/5_background/layers/2_second_layer/2.png",
-  "img/5_background/layers/1_first_layer/2.png",
-  "img/5_background/layers/air.png",
-  "img/5_background/layers/3_third_layer/1.png",
-  "img/5_background/layers/2_second_layer/1.png",
-  "img/5_background/layers/1_first_layer/1.png",
-];
-let backgroundObjects = [];
-const amountClouds = levelLength;
+/**
+ * Factory function that creates and returns a new instance of a predefined level.
+ * This function defines the initial state of the game world by instantiating and
+ * positioning all game objects, including enemies, environment elements, and collectibles.
+ * It is used to initialize the level at the start of the game or to reset it.
+ *
+ * The `Level` constructor is populated with arrays of:
+ * - Enemies: An Endboss, several Chickens, and SmallChickens.
+ * - Clouds: A series of clouds for the sky.
+ * - BackgroundObjects: Multiple layers for a parallax scrolling effect.
+ * - Bottles: Collectible bottle items.
+ * - Coins: Collectible coin items.
+ *
+ * @returns {Level} A new Level object containing all the defined game elements.
+ */
+const levelLength = 6;
 const backgroundWidth = 719;
 const end_of_level_x = backgroundWidth * (levelLength - 1);
-let clouds = [];
 
-//Collectable Items
-const amountCollectableBottles = 10;
-const amountCollectableCoins = 10;
-let collectableObjects = [];
-
-//Level Setup
-let level1;
-
-/**
- * The function generates a level with a background, clouds, collectable items, enemies, and an end
- * boss.
- */
-function generateLevel() {
-  generateBackground();
-  generateClouds();
-  generateCollectableItems();
-  generateEnemies();
-  generateEndboss();
-  setNewLevel()
-}
-
-/**
- * The function sets a new level with specified objects and parameters.
- */
-function setNewLevel() {
-  level1 = new Level(
-    clouds,
-    backgroundObjects,
-    collectableObjects,
-    enemies,
-    endboss,
-    amountCollectableBottles,
-    amountCollectableCoins,
-    end_of_level_x
-  )
-}
-
-/**
- * The function resets various arrays used in a game level.
- */
 function resetLevel() {
-clouds = [];
-enemies = [];
-endboss = [];
-backgroundObjects = []
-collectableObjects = [];
+  return new Level(
+    [
+      new Endboss(end_of_level_x + 250),
+      new Chicken(650), new Chicken(980), new Chicken(1320), new Chicken(1680),
+      new Chicken(2050), new Chicken(2410), new Chicken(2780), new Chicken(3140),
+      new Chicken(3500),
+      new Smallchicken(820), new Smallchicken(1470), new Smallchicken(1880), new Smallchicken(2280),
+      new Smallchicken(2660), new Smallchicken(3020), new Smallchicken(3380), new Smallchicken(3720)
+    ],
+    [
+      new Cloud(210), new Cloud(430), new Cloud(670), new Cloud(820),
+      new Cloud(1170), new Cloud(1350), new Cloud(1580), new Cloud(1900),
+      new Cloud(2150), new Cloud(2430), new Cloud(2670), new Cloud(2820),
+      new Cloud(3160), new Cloud(3410), new Cloud(3670), new Cloud(3820),
+      new Cloud(4060), new Cloud(4250), new Cloud(4460), new Cloud(4710),
+      new Cloud(4970), new Cloud(5130), new Cloud(5460), new Cloud(5750),
+      new Cloud(5980)
+    ],
+    [
+      new BackgroundObject("./img/5_background/complete_background.png", -719),
+      new BackgroundObject("./img/5_background/complete_background.png", 0),
+      new BackgroundObject("./img/5_background/complete_background.png", 719),
+      new BackgroundObject("./img/5_background/complete_background.png", 719 * 2),
+      new BackgroundObject("./img/5_background/complete_background.png", 719 * 3),
+      new BackgroundObject("./img/5_background/complete_background.png", 719 * 4),
+      new BackgroundObject("./img/5_background/complete_background.png", 719 * 5)
+    ],
+    [
+      new Bottle(510, 370), new Bottle(800, 370), new Bottle(1120, 370),
+      new Bottle(1530, 370), new Bottle(1860, 370), new Bottle(2240, 370),
+      new Bottle(2400, 370), new Bottle(2620, 370), new Bottle(2870, 370),
+      new Bottle(3050, 370), new Bottle(3200, 370), new Bottle(3490, 370)
+    ],
+    [
+      new Coin(600, 140), new Coin(1100, 230), new Coin(1580, 270),
+      new Coin(1860, 170), new Coin(2150, 240), new Coin(2400, 170),
+      new Coin(2660, 230), new Coin(2900, 140), new Coin(3200, 220),
+      new Coin(3380, 180)
+    ],
+    end_of_level_x
+  );
 }
 
-/**
- * This function generates a background by creating multiple instances of BackgroundObject with
- * different images and widths.
- */
-function generateBackground() {
-  let bgObject;
-  for (let i = 0; i < levelLength; i++) {
-    for (let j = 0; j < backgroundImg.length; j++) {
-      let bgImage = backgroundImg[j];
-      if (j < backgroundImg.length / 2) {
-        bgWidth = backgroundWidth * (i * 2 - 1);
-        bgObject = new BackgroundObject(bgImage, bgWidth, 0);
-      } else {
-        bgWidth = backgroundWidth * (i * 2);
-        bgObject = new BackgroundObject(bgImage, bgWidth, 0);
-      }
-      backgroundObjects.push(bgObject);
-    }
-  }
-}
-
-/**
- * The function generates a specified number of clouds with random images and locations on the
- * background.
- */
-function generateClouds() {
-  for (let i = 0; i < amountClouds; i++) {
-    let cloudLocation = backgroundWidth * (i + 1) - 500;
-    let imageNumber = Math.round(Math.random()); // either 0 or 1
-    let cloud = new Cloud(cloudLocation, imageNumber);
-    clouds.push(cloud);
-  }
-}
-
-/**
- * This function generates a specified number of Endboss objects and adds them to an array.
- */
-function generateEndboss() {
-  for (let i = 0; i < amountEndboss; i++) {
-    let boss = new Endboss();
-    endboss.push(boss);
-  }
-}
-
-/**
- * This function generates a specified number of enemies and adds them to an array.
- */
-function generateEnemies() {
-  for (let i = 0; i < amountEnemies; i++) {
-    let enemylocation = (backgroundWidth - 300) * (i + 1);
-    let chicken = new Chicken(enemylocation);
-    let smallchicken = new Smallchicken(enemylocation);
-    enemies.push(chicken, smallchicken);
-  }
-}
-
-/**
- * The function generates collectable coins and bottles.
- */
-function generateCollectableItems() {
-  generateCollectableCoins();
-  generateCollectableBottles();
-}
-
-/**
- * This function generates a specified number of collectable coins and adds them to an array of
- * collectable objects.
- */
-function generateCollectableCoins() {
-  for (let i = 0; i < amountCollectableCoins; i++) {
-    let location = (backgroundWidth - 550) * (i + 1);
-    let coin = new Coin(location);
-    collectableObjects.push(coin);
-  }
-}
-
-/**
- * This function generates a specified number of collectable bottles and adds them to an array of
- * collectable objects.
- */
-function generateCollectableBottles() {
-  for (let i = 0; i < amountCollectableBottles; i++) {
-    let location = (backgroundWidth - 550) * (i + 1);
-    let bottle = new Bottle(location);
-    collectableObjects.push(bottle);
-  }
-}
+let level1 = resetLevel();

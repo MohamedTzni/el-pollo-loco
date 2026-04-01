@@ -225,11 +225,19 @@ class Pepe extends MovableObject {
    */
   handleIdle() {
     const now = Date.now();
-    if (now - this.lastMoveTime > this.idleTimeoutMs) {
+    if (this.world?.showEndbossStatusBar || this.isEnemyNearby()) {
+      this.playAnimation(this.IMAGES_IDLE);
+    } else if (now - this.lastMoveTime > this.idleTimeoutMs) {
       this.playAnimation(this.IMAGES_LONGIDLE);
     } else {
       this.playAnimation(this.IMAGES_IDLE);
     }
+  }
+
+  isEnemyNearby() {
+    return this.world?.level?.enemies?.some(
+      (enemy) => enemy?.isAlive !== false && Math.abs(enemy.x - this.x) < 500
+    );
   }
 
   // ---- Bewegungsfunktionen ----

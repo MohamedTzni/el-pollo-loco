@@ -19,12 +19,14 @@ class ThrowableBottle extends ThrowableObject {
   ];
 
   constructor(x, y, direction) {
-    super().loadImage("img/6_salsa_bottle/salsa_bottle.png");
+    super();
+    this.loadImage(this.IMAGES_ROTATION[0]);
     this.loadImages(this.IMAGES_ROTATION);
     this.loadImages(this.IMAGES_SPLASH);
     this.x = x;
     this.y = y;
     this.throw(direction);
+    this.animate();
   }
 
   /**
@@ -32,7 +34,8 @@ class ThrowableBottle extends ThrowableObject {
    * milliseconds.
    */
   animate() {    
-      setInterval(() => {
+      if (this.animationInterval) clearInterval(this.animationInterval);
+      this.animationInterval = setInterval(() => {
         if (!this.isBroken) {
         this.playAnimation(this.IMAGES_ROTATION);
         } 

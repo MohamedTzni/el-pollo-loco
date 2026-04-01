@@ -8,6 +8,7 @@ class MovableObject extends DrawableObject {
   lastHit = 0;
   IMAGES_DEAD;
   isAlive = true;
+  isActive = true;  // Controls if enemy is active/visible
   world;
 
   /**
@@ -89,13 +90,16 @@ class MovableObject extends DrawableObject {
    * @param damage - The amount of damage that the hit will cause to the energy of the object being
    * hit.
    */
-  hit(damage) {
+  hit(damage = 10) {
+    const now = new Date().getTime();
+    if (now - this.lastHit < 1200) return false;
+
     this.energy -= damage;
     if (this.energy < 0) {
       this.energy = 0;
-    } else {
-      this.lastHit = new Date().getTime();
     }
+    this.lastHit = now;
+    return true;
   }
 
   /**
@@ -216,25 +220,25 @@ class MovableObject extends DrawableObject {
 
   /**
    * This function moves an enemy to the left at a rate of 60 frames per second, as long as the enemy
-   * is alive.
+   * is alive and active.
    */
   moveEnemyLeft() {
     setInterval(() => {
-      if (this.isAlive) {
+      if (this.isAlive && this.isActive) {
         this.moveLeft();
-      } else clearInterval();
+      } else if (!this.isAlive) clearInterval();
     }, 1000 / 60);
   }
 
   /**
-   * This function plays a walking animation for an enemy character at a set interval, but stops the
-   * animation if the enemy is no longer alive.
+   * This function plays a walking animation for an enemy character at a set interval.
+   * Only animates if the enemy is alive and active.
    */
   playEnemyAnimation() {
     setInterval(() => {
-      if (this.isAlive) {
+      if (this.isAlive && this.isActive) {
         this.playAnimation(this.IMAGES_WALKING);
-      } else {
+      } else if (!this.isAlive) {
         this.stopEnemyAnimation();
       }
     }, 200);
