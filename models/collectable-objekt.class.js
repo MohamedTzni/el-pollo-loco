@@ -38,4 +38,11 @@ class CollectableObject extends DrawableObject {
     let indexofitem = world.getIndexOfItem(world.level.collectableItems, item);
     world.level.collectableItems.splice(indexofitem, 1);
   }
+
+  /**
+   * Alias for collectItem to match world.collect() calls
+   */
+  collect() {
+    this.collectItem(this);
+  }
 }

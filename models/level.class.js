@@ -2,20 +2,16 @@ class Level {
     enemies;
     clouds;
     backgroundObjects;
+    bottles;
+    coins;
     end_of_level_x;
-    collectableItems;
-    endboss;
-    amountCollectableBottles;
-    amountCollectableCoins;
 
-    constructor(clouds, backgroundObjects, collectableItems, enemies, endboss,amountCollectableBottles,amountCollectableCoins, end_of_level_x){
+    constructor(enemies, clouds, backgroundObjects, bottles, coins, end_of_level_x){
+        this.enemies = enemies;
         this.clouds = clouds;
         this.backgroundObjects = backgroundObjects;
-        this.collectableItems = collectableItems;
-        this.enemies = enemies;
-        this.endboss = endboss;
-        this.amountCollectableBottles = amountCollectableBottles;
-        this.amountCollectableCoins = amountCollectableCoins;
+        this.bottles = bottles;
+        this.coins = coins;
         this.end_of_level_x = end_of_level_x;
     }
 
