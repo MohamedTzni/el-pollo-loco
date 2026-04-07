@@ -332,7 +332,7 @@ class World {
    * Handles a collision between the character and the endboss.
    */
   handleEndbossCollision() {
-    const didHit = this.character.hit(25);
+    const didHit = this.character.hit(10);
     if (didHit) {
       this.playSound(this.character.hurt_sound);
       this.statusBar.setPercentage(this.character.energy);
