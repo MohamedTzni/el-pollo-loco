@@ -146,8 +146,11 @@ class Endboss extends MovableObject {
    * The function plays an animation of the end boss dying and moves it down by 30 units.
    */
   playEndbossDying() {
+    if (!this.dyingStarted) {
+      this.dyingStarted = true;
+      setTimeout(() => this.moveDown(80), 800);
+    }
     this.playAnimation(this.IMAGES_DEAD);
-    this.moveDown(30);
   }
 
   /**
