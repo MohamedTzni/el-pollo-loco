@@ -125,11 +125,7 @@ h1 {
 
 .button {
   z-index: 3;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   background-color: rgba(255, 221, 0, 1);
   color: rgb(250, 100, 0);
   letter-spacing: 2px;
