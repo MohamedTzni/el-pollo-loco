@@ -35,7 +35,5 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     })
-    .catch((err) =>
-      console.error("[overlay] Konnte overlay.html nicht laden:", err)
-    );
+    .catch(() => {});
 });

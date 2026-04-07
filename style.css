@@ -387,6 +387,9 @@ canvas {
   border: 1px solid black;
   cursor: pointer;
 }
+.control-btn {
+  cursor: pointer;
+}
 .control-btn img {
   height: 70px;
   width: 70px;
