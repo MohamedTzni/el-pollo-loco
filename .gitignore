@@ -1,4 +1,5 @@
 # Ignore local branch/build artifacts or workspace folder
 ElpolloLoco-main
 rewrite_dates.py
+dist
 
