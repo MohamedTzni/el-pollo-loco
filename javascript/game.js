@@ -120,7 +120,22 @@ function showEndScreen() {
   }
   hideGameUI();
   endscreen.classList.remove("d-none");
-  showMenuBar(); // <-- NEU: auf dem Endscreen die Menü-Buttons wieder anzeigen
+  showMenuBar();
+  playEndScreenSound(world.gameWon);
+}
+
+function playEndScreenSound(win) {
+  if (isSoundMuted) return;
+  try {
+    if (win) {
+      const endboss = world?.level?.enemies?.find((e) => e instanceof Endboss);
+      const sound = endboss?.endbossDead_sound;
+      if (sound) { sound.currentTime = 0; sound.play().catch(() => {}); }
+    } else {
+      const sound = world?.character?.dead_sound;
+      if (sound) { sound.currentTime = 0; sound.play().catch(() => {}); }
+    }
+  } catch {}
 }
 
 // ---- Functions for keyboard usage ----
