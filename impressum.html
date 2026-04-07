@@ -5,10 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Impressum – El Pollo Loco</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      min-height: 100vh;
+      background: #f5f0e8 !important;
+      background-image: none !important;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #000 !important;
+      overflow-y: auto !important;
+    }
+    .impressum-card {
+      background: #fff;
+      color: #000;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 48px 80px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      line-height: 1.7;
+    }
+    .impressum-card h1 {
+      font-size: 2.4rem;
+      font-family: "AkayaKanadaka", Arial, sans-serif;
+      color: rgb(250, 100, 0);
+      text-shadow: 2px 2px rgba(0,0,0,0.15);
+      letter-spacing: 2px;
+      margin-bottom: 28px;
+      border-bottom: 3px solid rgb(255, 221, 0);
+      padding-bottom: 12px;
+    }
+    .impressum-card h2 { font-size: 1.1rem; margin-top: 28px; margin-bottom: 6px; color: #000; }
+    .impressum-card p { color: #000 !important; -webkit-hyphens: none; hyphens: none; }
+    .impressum-card a:not(.cta) { color: #000; }
+    .impressum-card .cta {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      margin-top: 20px;
+      text-decoration: none;
+      display: flex;
+      width: fit-content;
+      min-width: unset;
+      padding: 0 24px;
+      height: 56px;
+      font-size: 1rem;
+      color: #000 !important;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
 </head>
-<body> class="flex-center" style="min-height:100vh; flex-direction:column; gap:16px;">
+<body>
+<div class="impressum-card">
   <h1>Impressum</h1>
-  <p>Dies ist eine Studien-/Übungsarbeit („El Pollo Loco“).<br>Bitte trage hier die Pflichtangaben gemäß § 5 TMG ein.</p>
+
+  <h2>Angaben gemäß § 5 TMG</h2>
+  <p>
+    Mohamed Touzani<br>
+    Merowingerstraße 7<br>
+    42653 Solingen, Germany
+  </p>
+
+  <h2>Kontakt</h2>
+  <p>E-Mail: <a href="mailto:kontakt@mohamed-touzani.de">kontakt@mohamed-touzani.de</a></p>
+
+  <h2>Hinweis</h2>
+  <p>
+    Dieses Spiel (El Pollo Loco) wird als nichtkommerzielles Privatprojekt
+    zur Präsentation meiner Arbeit als Fullstack Developer gehostet.
+  </p>
+
+  <h2>Inhaltliche Verantwortung</h2>
+  <p>
+    Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt.
+    Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte
+    kann jedoch keine Gewähr übernommen werden.
+  </p>
+
+  <h2>Haftung für externe Links</h2>
+  <p>
+    Diese Website kann Links zu externen Webseiten enthalten, auf deren
+    Inhalte ich keinen Einfluss habe. Für die Inhalte der verlinkten Seiten
+    ist stets der jeweilige Anbieter oder Betreiber verantwortlich.
+  </p>
+
+  <h2>Urheberrecht</h2>
+  <p>
+    Die durch mich erstellten Inhalte und Werke auf diesen Seiten unterliegen
+    dem deutschen Urheberrecht. Vervielfältigung, Bearbeitung, Verbreitung
+    und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts
+    bedürfen meiner schriftlichen Zustimmung.
+  </p>
+
   <a href="index.html" class="cta">Zurück zum Start</a>
+</div>
 </body>
 </html>
