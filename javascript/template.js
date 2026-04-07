@@ -29,16 +29,14 @@ function showGameUI() {
   document.getElementById("infobtn").classList.add("d-none");
   document.getElementById("btn-fullscreen").classList.remove("d-none");
   document.getElementById("btn-sound").classList.remove("d-none");
-  if (shouldShowMobileControls()) {
-    document.getElementById("btn-left").classList.remove("d-none");
-    document.getElementById("btn-left").classList.remove("hide");
-    document.getElementById("btn-right").classList.remove("d-none");
-    document.getElementById("btn-right").classList.remove("hide");
-    document.getElementById("btn-jump").classList.remove("d-none");
-    document.getElementById("btn-jump").classList.remove("hide");
-    document.getElementById("btn-throw").classList.remove("d-none");
-    document.getElementById("btn-throw").classList.remove("hide");
-  }
+  document.getElementById("btn-left").classList.remove("d-none");
+  document.getElementById("btn-left").classList.remove("hide");
+  document.getElementById("btn-right").classList.remove("d-none");
+  document.getElementById("btn-right").classList.remove("hide");
+  document.getElementById("btn-jump").classList.remove("d-none");
+  document.getElementById("btn-jump").classList.remove("hide");
+  document.getElementById("btn-throw").classList.remove("d-none");
+  document.getElementById("btn-throw").classList.remove("hide");
 }
 
 function showMobileButtons() {
