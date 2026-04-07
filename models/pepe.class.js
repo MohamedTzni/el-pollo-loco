@@ -188,17 +188,6 @@ class Pepe extends MovableObject {
     this.walking_sound.pause();
     this.walking_sound.currentTime = 0;
     this.world.playSound(this.dead_sound);
-
-    this.endGame();
-  }
-
-  /**
-   * Endscreen/Spielende anstoßen.
-   */
-  endGame() {
-    if (this.world && typeof stopGame === 'function') {
-      stopGame();
-    }
   }
 
   /**
