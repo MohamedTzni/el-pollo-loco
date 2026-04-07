@@ -146,10 +146,12 @@ function renderGameWonScreen() {
   ];
   const randomScreen = winScreens[Math.floor(Math.random() * winScreens.length)];
   return `
-    <img src="${randomScreen}" alt="You won!" style="width: 100%; height: auto; display: block;">
-    <div style="position:absolute; bottom:60px; width:100%; text-align:center;">
-      <button onclick="reloadGame()" class="button" style="margin:0 auto 10px; display:block;">Play Again</button>
-      <button onclick="backToStart()" class="button" style="margin:0 auto; display:block;">Back to Start</button>
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <img src="${randomScreen}" alt="You won!" style="width:100%; height:auto; display:block; max-height:70vh; object-fit:contain;">
+      <div style="display:flex; gap:16px; justify-content:center; padding:20px 0;">
+        <button onclick="reloadGame()" class="button">Play Again</button>
+        <button onclick="backToStart()" class="button">Back to Start</button>
+      </div>
     </div>`;
 }
 
@@ -162,10 +164,12 @@ function renderRandomGameOverScreen() {
   ];
   const randomScreen = gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
   return `
-    <img src="${randomScreen}" alt="Game Over" style="width: 100%; height: auto; display: block;">
-    <div style="position:absolute; bottom:60px; width:100%; text-align:center;">
-      <button onclick="reloadGame()" class="button" style="margin:0 auto 10px; display:block;">Try Again</button>
-      <button onclick="backToStart()" class="button" style="margin:0 auto; display:block;">Back to Start</button>
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <img src="${randomScreen}" alt="Game Over" style="width:100%; height:auto; display:block; max-height:70vh; object-fit:contain;">
+      <div style="display:flex; gap:16px; justify-content:center; padding:20px 0;">
+        <button onclick="reloadGame()" class="button">Try Again</button>
+        <button onclick="backToStart()" class="button">Back to Start</button>
+      </div>
     </div>`;
 }
 
