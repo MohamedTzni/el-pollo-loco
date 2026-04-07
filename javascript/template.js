@@ -138,13 +138,35 @@ function hideGameUI() {
 }
 
 function renderGameWonScreen() {
-  return `<img src="./img/9_intro_outro_screens/game_over/you won.png" alt="You won!" style="width: 100%; height: auto; display: block;"><div style="position: absolute; bottom: 60px; width: 100%; text-align: center;"><button onclick="reloadGame()" class="button" style="margin: 0 auto 10px; display: block;">Play Again</button><button onclick="backToStart()" class="button" style="margin: 0 auto; display: block;">Back to Start</button></div>`;
+  const winScreens = [
+    "./img/10_you won, you lost/You Win A.png",
+    "./img/10_you won, you lost/You win B.png",
+    "./img/10_you won, you lost/You Won B.png",
+    "./img/10_you won, you lost/You won A.png",
+  ];
+  const randomScreen = winScreens[Math.floor(Math.random() * winScreens.length)];
+  return `
+    <img src="${randomScreen}" alt="You won!" style="width: 100%; height: auto; display: block;">
+    <div style="position:absolute; bottom:60px; width:100%; text-align:center;">
+      <button onclick="reloadGame()" class="button" style="margin:0 auto 10px; display:block;">Play Again</button>
+      <button onclick="backToStart()" class="button" style="margin:0 auto; display:block;">Back to Start</button>
+    </div>`;
 }
 
 function renderRandomGameOverScreen() {
-  const gameOverScreens = ["img/9_intro_outro_screens/game_over/game over!.png", "img/9_intro_outro_screens/game_over/game over.png", "img/9_intro_outro_screens/game_over/oh no you lost!.png", "img/9_intro_outro_screens/game_over/you lost.png"];
-  let randomScreen = gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
-  return `<img src="./${randomScreen}" alt="Game Over" style="width: 100%; height: auto; display: block;"><div style="position: absolute; bottom: 60px; width: 100%; text-align: center;"><button onclick="reloadGame()" class="button" style="margin: 0 auto 10px; display: block;">Try Again</button><button onclick="backToStart()" class="button" style="margin: 0 auto; display: block;">Back to Start</button></div>`;
+  const gameOverScreens = [
+    "./img/10_you won, you lost/Game Over.png",
+    "./img/10_you won, you lost/Game over A.png",
+    "./img/10_you won, you lost/You lost b.png",
+    "./img/10_you won, you lost/You lost.png",
+  ];
+  const randomScreen = gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
+  return `
+    <img src="${randomScreen}" alt="Game Over" style="width: 100%; height: auto; display: block;">
+    <div style="position:absolute; bottom:60px; width:100%; text-align:center;">
+      <button onclick="reloadGame()" class="button" style="margin:0 auto 10px; display:block;">Try Again</button>
+      <button onclick="backToStart()" class="button" style="margin:0 auto; display:block;">Back to Start</button>
+    </div>`;
 }
 
 function backToStart() {
