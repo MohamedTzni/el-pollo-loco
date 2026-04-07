@@ -92,7 +92,7 @@ class MovableObject extends DrawableObject {
    */
   hit(damage = 10) {
     const now = new Date().getTime();
-    if (now - this.lastHit < 500) return false;
+    if (now - this.lastHit < 300) return false;
 
     this.energy -= damage;
     if (this.energy < 0) {
