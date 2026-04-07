@@ -149,8 +149,8 @@ function renderGameWonScreen() {
     <div style="display:flex; flex-direction:column; align-items:center;">
       <img src="${randomScreen}" alt="You won!" style="width:100%; height:auto; display:block; max-height:70vh; object-fit:contain;">
       <div style="display:flex; gap:16px; justify-content:center; padding:20px 0;">
-        <button onclick="reloadGame()" class="button">Play Again</button>
-        <button onclick="backToStart()" class="button">Back to Start</button>
+        <button onclick="reloadGame()" class="endscreen-btn">Play Again</button>
+        <button onclick="backToStart()" class="endscreen-btn">Back to Start</button>
       </div>
     </div>`;
 }
@@ -167,8 +167,8 @@ function renderRandomGameOverScreen() {
     <div style="display:flex; flex-direction:column; align-items:center;">
       <img src="${randomScreen}" alt="Game Over" style="width:100%; height:auto; display:block; max-height:70vh; object-fit:contain;">
       <div style="display:flex; gap:16px; justify-content:center; padding:20px 0;">
-        <button onclick="reloadGame()" class="button">Try Again</button>
-        <button onclick="backToStart()" class="button">Back to Start</button>
+        <button onclick="reloadGame()" class="endscreen-btn">Try Again</button>
+        <button onclick="backToStart()" class="endscreen-btn">Back to Start</button>
       </div>
     </div>`;
 }
