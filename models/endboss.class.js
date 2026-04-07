@@ -150,7 +150,12 @@ class Endboss extends MovableObject {
   playEndbossDying() {
     if (!this.dyingStarted) {
       this.dyingStarted = true;
-      setTimeout(() => this.moveDown(80), 800);
+      this._flySpeed = 3;
+      this._flyInterval = setInterval(() => {
+        this._flySpeed += 1.2;
+        this.y -= this._flySpeed;
+      }, 1000 / 60);
+      setTimeout(() => clearInterval(this._flyInterval), 2000);
     }
     this.playAnimation(this.IMAGES_DEAD);
   }

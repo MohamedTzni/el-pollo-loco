@@ -139,10 +139,10 @@ function hideGameUI() {
 
 function renderGameWonScreen() {
   const winScreens = [
-    "./img/10_you won, you lost/You Win A.png",
-    "./img/10_you won, you lost/You win B.png",
-    "./img/10_you won, you lost/You Won B.png",
-    "./img/10_you won, you lost/You won A.png",
+    "./img/10_You won, you lost/You Win A.png",
+    "./img/10_You won, you lost/You win B.png",
+    "./img/10_You won, you lost/You Won B.png",
+    "./img/10_You won, you lost/You won A.png",
   ];
   const randomScreen = winScreens[Math.floor(Math.random() * winScreens.length)];
   return `
@@ -157,10 +157,10 @@ function renderGameWonScreen() {
 
 function renderRandomGameOverScreen() {
   const gameOverScreens = [
-    "./img/10_you won, you lost/Game Over.png",
-    "./img/10_you won, you lost/Game over A.png",
-    "./img/10_you won, you lost/You lost b.png",
-    "./img/10_you won, you lost/You lost.png",
+    "./img/10_You won, you lost/Game Over.png",
+    "./img/10_You won, you lost/Game over A.png",
+    "./img/10_You won, you lost/You lost b.png",
+    "./img/10_You won, you lost/You lost.png",
   ];
   const randomScreen = gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
   return `

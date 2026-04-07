@@ -10,8 +10,9 @@ class Bottle extends CollectableObject {
   };
   collect_sound = new Audio("./audio/collect_bottle.wav");
 
-  constructor(x) {
+  constructor(x, y) {
     super().loadImage("img/6_salsa_bottle/2_salsa_bottle_on_ground.png");
-    this.x = x + Math.random() * 400;
+    this.x = x;
+    if (y !== undefined) this.y = y;
   }
 }

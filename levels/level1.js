@@ -13,17 +13,16 @@
  *
  * @returns {Level} A new Level object containing all the defined game elements.
  */
-const levelLength = 6;
+const levelLength = 7;
 const backgroundWidth = 719;
 const end_of_level_x = backgroundWidth * (levelLength - 1);
 
 function resetLevel() {
   return new Level(
     [
-      new Endboss(end_of_level_x + 250),
+      new Endboss(end_of_level_x + 200),
       new Chicken(650), new Chicken(980), new Chicken(1320), new Chicken(1680),
       new Chicken(2050), new Chicken(2410), new Chicken(2780), new Chicken(3140),
-      new Chicken(3500),
       new Smallchicken(820), new Smallchicken(1470), new Smallchicken(1880), new Smallchicken(2280),
       new Smallchicken(2660), new Smallchicken(3020), new Smallchicken(3380), new Smallchicken(3720)
     ],
@@ -43,7 +42,8 @@ function resetLevel() {
       new BackgroundObject("./img/5_background/complete_background.png", 719 * 2),
       new BackgroundObject("./img/5_background/complete_background.png", 719 * 3),
       new BackgroundObject("./img/5_background/complete_background.png", 719 * 4),
-      new BackgroundObject("./img/5_background/complete_background.png", 719 * 5)
+      new BackgroundObject("./img/5_background/complete_background.png", 719 * 5),
+      new BackgroundObject("./img/5_background/complete_background.png", 719 * 6)
     ],
     [
       new Bottle(510, 370), new Bottle(800, 370), new Bottle(1120, 370),

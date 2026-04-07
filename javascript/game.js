@@ -119,6 +119,7 @@ function showEndScreen() {
     endscreen.innerHTML = renderRandomGameOverScreen();
   }
   hideGameUI();
+  document.getElementById("mainheadline").classList.add("d-none");
   endscreen.classList.remove("d-none");
   showMenuBar();
   playEndScreenSound(world.gameWon);
