@@ -18,6 +18,7 @@ class ThrowableBottle extends ThrowableObject {
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
   ];
 
+  /** Creates a thrown bottle. */
   constructor(x, y, direction) {
     super();
     this.loadImage(this.IMAGES_ROTATION[0]);
@@ -29,10 +30,7 @@ class ThrowableBottle extends ThrowableObject {
     this.animate();
   }
 
-  /**
-   * This function animates images by repeatedly calling the playAnimation function every 50
-   * milliseconds.
-   */
+  /** Animates the flying or broken bottle. */
   animate() {    
       if (this.animationInterval) clearInterval(this.animationInterval);
       this.animationInterval = setInterval(() => {

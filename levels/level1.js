@@ -1,22 +1,11 @@
 /**
- * Factory function that creates and returns a new instance of a predefined level.
- * This function defines the initial state of the game world by instantiating and
- * positioning all game objects, including enemies, environment elements, and collectibles.
- * It is used to initialize the level at the start of the game or to reset it.
- *
- * The `Level` constructor is populated with arrays of:
- * - Enemies: An Endboss, several Chickens, and SmallChickens.
- * - Clouds: A series of clouds for the sky.
- * - BackgroundObjects: Multiple layers for a parallax scrolling effect.
- * - Bottles: Collectible bottle items.
- * - Coins: Collectible coin items.
- *
- * @returns {Level} A new Level object containing all the defined game elements.
+ * Creates the level with enemies, clouds, background, bottles and coins.
  */
 const levelLength = 7;
 const backgroundWidth = 719;
 const end_of_level_x = backgroundWidth * (levelLength - 1);
 
+/** Creates a fresh level. */
 function resetLevel() {
   return new Level(
     [

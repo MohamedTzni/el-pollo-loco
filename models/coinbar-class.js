@@ -10,18 +10,13 @@ class CoinBar extends StatusBar {
     "img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png",
   ];
 
+  /** Creates the coin bar. */
   constructor() {
     super().loadImages(this.IMAGES);
     this.setPercentage(0);
   }
 
-/**
- * The function returns an image index based on a percentage value.
- * @returns The function `resolveImageIndex()` returns a number between 0 and 5 based on the value of
- * the `percentage` property of the object calling the function. If the `percentage` is 100, it returns
- * 5. If the `percentage` is greater than 80, it returns 4. If the `percentage` is greater than 60, it
- * returns 3. If
- */
+  /** Chooses the image for the current percentage. */
   resolveImageIndex() {
     if (this.percentage == 100) {
       return 5;

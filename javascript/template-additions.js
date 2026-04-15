@@ -1,6 +1,4 @@
-/**
- * Renders the game won screen with buttons
- */
+/** Renders the win screen. */
 function renderGameWonScreen() {
   return `<img src="./img/9_intro_outro_screens/game_over/you won.png" alt="You won!" style="width: 100%; height: auto; display: block;">
   <div style="position: absolute; bottom: 60px; width: 100%; text-align: center;">
@@ -9,9 +7,7 @@ function renderGameWonScreen() {
   </div>`;
 }
 
-/**
- * Renders a random game over screen
- */
+/** Renders a random game over screen. */
 function renderRandomGameOverScreen() {
   const gameOverScreens = [
     "img/9_intro_outro_screens/game_over/game over!.png",
@@ -27,9 +23,15 @@ function renderRandomGameOverScreen() {
   </div>`;
 }
 
-/**
- * Go back to the start screen
- */
+/** Goes back to the start screen. */
 function backToStart() {
-  location.reload();
+  if (world) world.stopAllSounds();
+  document.getElementById("endscreen").classList.add("d-none");
+  document.getElementById("canvas").classList.add("d-none");
+  document.getElementById("startscreen").classList.remove("d-none");
+  document.getElementById("mainheadline").classList.remove("d-none");
+  hideGameUI();
+  showMenuBar();
+  level1 = resetLevel();
+  world = null;
 }

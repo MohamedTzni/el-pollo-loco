@@ -7,6 +7,7 @@ class Cloud extends MovableObject {
     "img/5_background/layers/4_clouds/2.png",
   ];
 
+  /** Creates one cloud. */
   constructor(x, i = 0) {
     super().loadImage(this.IMAGES[i % this.IMAGES.length]);
     this.x = x + Math.random() * 100;
@@ -14,9 +15,7 @@ class Cloud extends MovableObject {
     this.animate();
   }
 
-  /**
-   * The function repeatedly calls the "moveLeft" function every 100 milliseconds using setInterval.
-   */
+  /** Moves the cloud to the left. */
   animate() {
     setInterval(() => {
       this.moveLeft();

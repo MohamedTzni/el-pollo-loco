@@ -4,7 +4,7 @@ class EndBossBar extends StatusBar {
   x = 300;
   y = 0;
 
-  // Nutzt die vorhandenen Healthbar-Bilder, damit keine 404-Logs mehr entstehen
+  // Uses the blue health bar images for the boss.
   IMAGES = [
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png",
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png",
@@ -14,6 +14,7 @@ class EndBossBar extends StatusBar {
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png",
   ];
 
+  /** Creates the boss health bar. */
   constructor() {
     super();
     this.loadImages(this.IMAGES);

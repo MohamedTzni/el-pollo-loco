@@ -14,22 +14,21 @@ let isSoundMuted = false;
 let isFullScreen = false;
 let portrait = window.matchMedia("(orientation: portrait)");
 
-/** Hilfsfunktionen für Menü-Leiste **/
+/** Helper functions for the menu bar. */
 function hideMenuBar() {
   const menu = document.querySelector(".menu-bar");
   if (menu) menu.classList.add("d-none");
 }
+
+/** Shows the menu bar. */
 function showMenuBar() {
   const menu = document.querySelector(".menu-bar");
   if (menu) menu.classList.remove("d-none");
 }
 
-// ---- Functions start here ----
+// Page setup
 
-/**
- * The function initializes the webpage by detecting mobile
- * devices, and setting up touch event listeners.
- */
+/** Starts the page setup. */
 function init() {
   initSoundSettings();
   setSoundIcon();
@@ -40,9 +39,7 @@ function init() {
   bindClickButtons();
 }
 
-/**
- * Desktop-Click-Listener für Sound/Fullscreen (ohne Touch).
- */
+/** Adds desktop clicks for sound and fullscreen. */
 function bindClickButtons() {
   const btnSound = document.getElementById("btn-sound");
   const btnFs    = document.getElementById("btn-fullscreen");
@@ -66,10 +63,7 @@ function bindClickButtons() {
   }
 }
 
-/**
- * The function starts the game by generating a level, showing the game UI, creating a canvas,
- * initializing a world object, and loading sound settings.
- */
+/** Starts a new game. */
 function startGame() {
   level1 = resetLevel();
   showGameUI();
@@ -80,18 +74,13 @@ function startGame() {
   loadSoundSettings();
 }
 
-/**
- * The function reloads the game by hiding the end screen and starting the game again.
- */
+/** Starts the game again from the end screen. */
 function reloadGame() {
   document.getElementById('endscreen').classList.add('d-none')
   startGame()
 }
 
-/**
- * The function stops the game by clearing all intervals, hiding the canvas and game UI, pausing the background
- * music, and showing the end screen after a delay of 1 second.
- */
+/** Stops the game and shows the end screen. */
 function stopGame() {
   clearAllIntervals();
   setTimeout(() => {
@@ -102,16 +91,12 @@ function stopGame() {
   }, 1000);
 }
 
-/**
- * The function clears all intervals set by the window object.
- */
+/** Clears running intervals. */
 function clearAllIntervals() {
   for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
 
-/**
- * The function displays either a game won or game over screen and hides the game UI.
- */
+/** Shows the win or lose screen. */
 function showEndScreen() {
   let endscreen = document.getElementById("endscreen");
   if (world.gameWon) {
@@ -126,6 +111,7 @@ function showEndScreen() {
   playEndScreenSound(world.gameWon);
 }
 
+/** Plays the sound on the end screen. */
 function playEndScreenSound(win) {
   if (isSoundMuted) return;
   try {
@@ -140,7 +126,7 @@ function playEndScreenSound(win) {
   } catch {}
 }
 
-// ---- Functions for keyboard usage ----
+// Keyboard input
 
 window.addEventListener("keydown", (event) => {
   if (event.code == "ArrowRight") {
@@ -150,7 +136,7 @@ window.addEventListener("keydown", (event) => {
     keyboard.KEY_LEFT = true;
   }
   if (event.code == "Space") {
-    event.preventDefault(); // verhindert Scrollen/Seite-Fokus frisst Space
+    event.preventDefault();
     keyboard.KEY_SPACE = true;
   }
   if (event.code == "KeyD") {
@@ -183,7 +169,7 @@ window.addEventListener("keyup", (event) => {
   if (event.code == "KeyM") {
     keyboard.KEY_M = false;
   }
-  if (event.code == "Escape") { // korrigiert von "KeyEscape"
+  if (event.code == "Escape") {
     keyboard.KEY_ESC = false;
     leaveFullscreen();
   }
@@ -191,20 +177,14 @@ window.addEventListener("keyup", (event) => {
 
 portrait.addEventListener("change", () => checkMobileOrientation());
 
-/**
- * The function detects if the device accessing the website has a small screen size and calls another
- * function to check its orientation if it is a mobile device.
- */
+/** Checks if the screen is a small mobile screen. */
 function detectMobileDevice() {
   if (window.innerWidth < 500 && window.innerHeight < 900) {
     checkMobileOrientation();
   }
 }
 
-/**
- * The function checks the orientation of a mobile device and displays or hides certain elements based
- * on whether it is in portrait or landscape mode.
- */
+/** Shows the rotate message in portrait mode. */
 function checkMobileOrientation() {
   if (portrait.matches) {
     document.getElementById("rotationAlert").classList.remove("d-none");
@@ -215,9 +195,7 @@ function checkMobileOrientation() {
   }
 }
 
-/**
- * Prevents the context menu from appearing on long-press of control buttons.
- */
+/** Prevents the context menu on control buttons. */
 function preventContextMenu() {
   ["btn-left", "btn-right", "btn-jump", "btn-throw", "btn-sound", "btn-fullscreen"].forEach((id) => {
     const el = document.getElementById(id);
@@ -225,9 +203,7 @@ function preventContextMenu() {
   });
 }
 
-/**
- * The function adds touch event listeners to buttons and updates the keyboard object accordingly.
- */
+/** Adds touch start controls. */
 function touchStart() {
   document.getElementById("btn-left").addEventListener("touchstart", (e) => {
     keyboard.KEY_LEFT = true;
@@ -257,10 +233,7 @@ function touchStart() {
   });
 }
 
-/**
- * The function sets event listeners for touch end events on specific buttons and updates corresponding
- * keyboard keys to false.
- */
+/** Adds touch end controls. */
 function touchEnd() {
   document.getElementById("btn-left").addEventListener("touchend", (e) => {
     keyboard.KEY_LEFT = false;
@@ -278,7 +251,6 @@ function touchEnd() {
     keyboard.KEY_D = false;
     e.preventDefault();
   });
-  // KORREKTUR: vorher versehentlich "touchstart"
   document.getElementById("btn-sound").addEventListener("touchend", (e) => {
     keyboard.KEY_M = false;
     e.preventDefault();
@@ -289,7 +261,7 @@ function touchEnd() {
   });
 }
 
-// ---- Functions for audio ----
+// Sound
 
 function toggleSound() {
   isSoundMuted = !isSoundMuted;
@@ -298,6 +270,7 @@ function toggleSound() {
   saveAudioSetting();
 }
 
+/** Sets the right sound icon. */
 function setSoundIcon() {
   let soundicon = document.getElementById("soundicon");
   if (!soundicon) return;
@@ -308,10 +281,12 @@ function setSoundIcon() {
   }
 }
 
+/** Saves the sound setting. */
 function saveAudioSetting() {
   localStorage.setItem("isEPLSoundMuted", isSoundMuted);
 }
 
+/** Loads the saved sound setting. */
 function initSoundSettings() {
   let initsound = localStorage.getItem("isEPLSoundMuted");
   if (initsound === null) {
@@ -321,16 +296,17 @@ function initSoundSettings() {
   }
 }
 
+/** Applies the sound setting. */
 function loadSoundSettings() {
   initSoundSettings();
   muteAudioFiles(isSoundMuted);
   setSoundIcon();
 }
 
+/** Mutes or unmutes all game sounds. */
 function muteAudioFiles(boolean) {
   if (!world) return;
 
-  // Character
   if (world.character) {
     if (world.character.walking_sound) world.character.walking_sound.muted = boolean;
     if (world.character.hurt_sound)    world.character.hurt_sound.muted    = boolean;
@@ -338,7 +314,6 @@ function muteAudioFiles(boolean) {
     if (world.character.jump_sound)    world.character.jump_sound.muted    = boolean;
   }
 
-  // World / Enemies / Endboss / Music
   if (world.chickenHurt_sound) world.chickenHurt_sound.muted = boolean;
   if (world.throwBottle_sound) world.throwBottle_sound.muted = boolean;
 if (world.backgroundMusic) {
@@ -355,7 +330,6 @@ if (world.backgroundMusic) {
     endboss.endbossDead_sound.muted = boolean;
   }
 
-  // Collectables
   const collectables = [
     ...(world.level?.bottles || []),
     ...(world.level?.coins || []),
@@ -369,7 +343,6 @@ if (world.backgroundMusic) {
   }
 }
 
-/* ==== Start-Button & Initialisierung ==== */
 document.addEventListener("DOMContentLoaded", () => {
   init();
 });

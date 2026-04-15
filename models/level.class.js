@@ -6,6 +6,7 @@ class Level {
     coins;
     end_of_level_x;
 
+    /** Creates a level with all needed objects. */
     constructor(enemies, clouds, backgroundObjects, bottles, coins, end_of_level_x){
         this.enemies = enemies;
         this.clouds = clouds;

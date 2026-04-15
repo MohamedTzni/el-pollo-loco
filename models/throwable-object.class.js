@@ -3,15 +3,12 @@ class ThrowableObject extends MovableObject {
   throwInterval;
   animationInterval;
 
+  /** Creates a throwable object. */
   constructor() {
     super();
   }
 
-  /**
-   * The function throws the character in a given direction and applies gravity.
-   * @param direction - The direction in which the object is being thrown. It can be either "right" or
-   * "left".
-   */
+  /** Throws the bottle to the left or right. */
   throw(direction) {
     this.speedY = 25;
     this.applyGravity();
@@ -27,12 +24,7 @@ class ThrowableObject extends MovableObject {
     }
   }
 
-  /* The `removeObject()` function is setting the `speedY` property of the `ThrowableObject` instance
-  to 0, which means that the object will stop moving vertically. It is also setting the
-  `acceleration` property to -0.1, which means that the object will start moving upwards due to the
-  force of gravity. Finally, it is setting the `y` property of the object to the `ground` property,
-  which means that the object will be positioned on the ground. This function is likely used to
-  remove the object from the game or reset it to its initial state. */
+  /** Stops the bottle after it breaks. */
   removeObject() {
     this.speedY = 0;
     this.acceleration = 0;
