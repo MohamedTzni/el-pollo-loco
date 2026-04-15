@@ -1,8 +1,8 @@
 /**
- * Rendering and drawing methods for the World class.
+ * Drawing methods for the world.
  */
 
-/** Draws the game world on every animation frame. */
+/** Draws the world again and again. */
 World.prototype.draw = function () {
   if (!this.gameOver) {
     this.clearCanvas();
@@ -13,16 +13,13 @@ World.prototype.draw = function () {
   requestAnimationFrame(() => { this.draw(); });
 };
 
-/** Clears the entire canvas. */
+/** Clears the canvas. */
 World.prototype.clearCanvas = function () {
   this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 };
 
-/**
- * Returns scale and offset for full-canvas rendering.
- * @returns {{ scale: number, offsetX: number, offsetY: number }}
- */
+/** Gets the scale for the game objects. */
 World.prototype.getRenderMetrics = function () {
   const scale = Math.max(
     this.canvas.width / this.baseWidth,
@@ -33,10 +30,7 @@ World.prototype.getRenderMetrics = function () {
   return { scale, offsetX, offsetY };
 };
 
-/**
- * Returns scale and offset for HUD rendering.
- * @returns {{ scale: number, offsetX: number, offsetY: number }}
- */
+/** Gets the scale for the bars. */
 World.prototype.getHudMetrics = function () {
   const scale = Math.min(
     this.canvas.width / this.baseWidth,
@@ -57,7 +51,7 @@ World.prototype.drawBackground = function () {
   this.ctx.translate(-this.camera_x, 0);
 };
 
-/** Draws fixed HUD elements such as status bars. */
+/** Draws the status bars. */
 World.prototype.drawFixedObjects = function () {
   const { scale, offsetX, offsetY } = this.getHudMetrics();
   this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
@@ -67,7 +61,7 @@ World.prototype.drawFixedObjects = function () {
   if (this.showEndbossStatusBar) this.addToMap(this.endbossStatusBar);
 };
 
-/** Draws all dynamic objects such as the character, enemies, and items. */
+/** Draws Pepe, enemies, items and bottles. */
 World.prototype.drawDynamicObjects = function () {
   const { scale, offsetX, offsetY } = this.getRenderMetrics();
   this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
@@ -80,28 +74,19 @@ World.prototype.drawDynamicObjects = function () {
   this.ctx.translate(-this.camera_x, 0);
 };
 
-/**
- * Adds multiple objects to the map.
- * @param {DrawableObject[]} objects
- */
+/** Adds many objects to the map. */
 World.prototype.addObjectsToMap = function (objects) {
   objects.forEach((o) => { this.addToMap(o); });
 };
 
-/**
- * Adds a single object to the map, flipping if needed.
- * @param {DrawableObject} mo
- */
+/** Adds one object to the map. */
 World.prototype.addToMap = function (mo) {
   if (mo.otherDirection) this.flipImage(mo);
   mo.draw(this.ctx);
   if (mo.otherDirection) this.flipImageBack(mo);
 };
 
-/**
- * Flips the canvas context horizontally for an object.
- * @param {DrawableObject} mo
- */
+/** Flips an object to the other side. */
 World.prototype.flipImage = function (mo) {
   this.ctx.save();
   this.ctx.translate(mo.width, 0);
@@ -109,10 +94,7 @@ World.prototype.flipImage = function (mo) {
   mo.x = mo.x * -1;
 };
 
-/**
- * Restores the canvas context after flipping.
- * @param {DrawableObject} mo
- */
+/** Changes the object back after flipping. */
 World.prototype.flipImageBack = function (mo) {
   this.ctx.restore();
   mo.x = mo.x * -1;
