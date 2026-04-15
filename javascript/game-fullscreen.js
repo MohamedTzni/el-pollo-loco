@@ -1,5 +1,6 @@
-// ---- Functions for fullscreen functionality ----
+// Fullscreen
 
+/** Switches fullscreen on or off. */
 function toggleFullscreen() {
   let fullscreen = document.getElementById("fullscreen");
   let body = document.body;
@@ -38,6 +39,7 @@ window.addEventListener("resize", () => {
   }
 });
 
+/** Opens the browser fullscreen mode. */
 function enterFullscreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
@@ -48,6 +50,7 @@ function enterFullscreen(element) {
   }
 }
 
+/** Leaves the browser fullscreen mode. */
 function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
@@ -58,12 +61,14 @@ function exitFullscreen() {
 
 document.addEventListener("fullscreenchange", fullscreenchangelog);
 
+/** Reacts when fullscreen is closed by the browser. */
 function fullscreenchangelog() {
   if (!document.fullscreenElement) {
     leaveFullscreen();
   }
 }
 
+/** Resets the page after fullscreen mode. */
 function leaveFullscreen() {
   if (isFullScreen) {
     let fullscreen = document.getElementById("fullscreen");

@@ -1,9 +1,12 @@
+/** Checks if the device can use touch. */
 function isTouchDevice(){ return ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }
 
+/** Checks if mobile buttons should be shown. */
 function shouldShowMobileControls() {
-  return isTouchDevice() || window.innerWidth <= 914;
+  return window.innerWidth <= 914;
 }
 
+/** Returns the canvas HTML. */
 function showCanvasSection() {
   return /*html*/ `
   <section id="canvas-section" class="flex-center">
@@ -12,6 +15,7 @@ function showCanvasSection() {
 `;
 }
 
+/** Returns the control info HTML. */
 function showGameControl() {
   return /*html*/ `
   <section id="controlsdescription" class="flex-center d-none">
@@ -23,22 +27,26 @@ function showGameControl() {
 `;
 }
 
+/** Shows the game buttons and hides the start screen. */
 function showGameUI() {
   document.getElementById("startscreen").classList.add("d-none");
   document.getElementById("controlsdescription").classList.remove("d-none");
   document.getElementById("infobtn").classList.add("d-none");
   document.getElementById("btn-fullscreen").classList.remove("d-none");
   document.getElementById("btn-sound").classList.remove("d-none");
-  document.getElementById("btn-left").classList.remove("d-none");
-  document.getElementById("btn-left").classList.remove("hide");
-  document.getElementById("btn-right").classList.remove("d-none");
-  document.getElementById("btn-right").classList.remove("hide");
-  document.getElementById("btn-jump").classList.remove("d-none");
-  document.getElementById("btn-jump").classList.remove("hide");
-  document.getElementById("btn-throw").classList.remove("d-none");
-  document.getElementById("btn-throw").classList.remove("hide");
+  setMobileControlButtons();
 }
 
+/** Shows mobile buttons only on small screens. */
+function setMobileControlButtons() {
+  ["btn-left", "btn-right", "btn-jump", "btn-throw"].forEach((id) => {
+    let button = document.getElementById(id);
+    button.classList.toggle("d-none", !shouldShowMobileControls());
+    button.classList.toggle("hide", !shouldShowMobileControls());
+  });
+}
+
+/** Returns the mobile button HTML. */
 function showMobileButtons() {
   return /*html*/ `
   <section id="mobilebuttons" class="d-none">
@@ -54,6 +62,7 @@ function showMobileButtons() {
 `;
 }
 
+/** Returns the fullscreen button HTML. */
 function showFullscreenSection() {
   return /*html*/ `
   <section id="fullscreen-controls" class="flex-center">
@@ -64,6 +73,7 @@ function showFullscreenSection() {
 `;
 }
 
+/** Returns the rotate message HTML. */
 function showRotateSection() {
   return /*html*/ `
   <section id="rotate" class="flex-center d-none">
@@ -72,6 +82,7 @@ function showRotateSection() {
 `;
 }
 
+/** Returns the start screen HTML. */
 function showStartScreen() {
   return /*html*/ `
   <section id="startscreen" class="flex-center">
@@ -87,7 +98,7 @@ function showStartScreen() {
               Play now
           </button>
           <button id="btn-explain" class="cta">
-              Spiel-Erklärung
+              Spiel-Erklaerung
           </button>
           <button id="btn-impressum" class="cta">
               Impressum
@@ -97,6 +108,7 @@ function showStartScreen() {
 `;
 }
 
+/** Returns the game over HTML. */
 function showGameOverScreen() {
   return /*html*/ `
     <section id="endscreen" class="flex-center">
@@ -109,6 +121,7 @@ function showGameOverScreen() {
 `;
 }
 
+/** Returns the win screen HTML. */
 function showWinScreen() {
   return /*html*/ `
     <section id="endscreen" class="flex-center">
@@ -121,6 +134,7 @@ function showWinScreen() {
 `;
 }
 
+/** Hides all game buttons. */
 function hideGameUI() {
   document.getElementById("controlsdescription").classList.add("d-none");
   document.getElementById("btn-fullscreen").classList.add("d-none");
@@ -135,6 +149,7 @@ function hideGameUI() {
   document.getElementById("btn-throw").classList.add("hide");
 }
 
+/** Returns a random win screen. */
 function renderGameWonScreen() {
   const winScreens = [
     "./img/10_You won, you lost/You Win A.png",
@@ -144,15 +159,16 @@ function renderGameWonScreen() {
   ];
   const randomScreen = winScreens[Math.floor(Math.random() * winScreens.length)];
   return `
-    <div style="display:flex; flex-direction:column; align-items:center;">
-      <img src="${randomScreen}" alt="You won!" style="width:100%; height:auto; display:block; max-height:70vh; object-fit:contain;">
-      <div style="display:flex; gap:16px; justify-content:center; padding:20px 0;">
+    <div class="endscreen-content">
+      <img src="${randomScreen}" alt="You won!">
+      <div class="endscreen-actions">
         <button onclick="reloadGame()" class="endscreen-btn">Play Again</button>
         <button onclick="backToStart()" class="endscreen-btn">Back to Start</button>
       </div>
     </div>`;
 }
 
+/** Returns a random game over screen. */
 function renderRandomGameOverScreen() {
   const gameOverScreens = [
     "./img/10_You won, you lost/Game Over.png",
@@ -162,15 +178,24 @@ function renderRandomGameOverScreen() {
   ];
   const randomScreen = gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
   return `
-    <div style="display:flex; flex-direction:column; align-items:center;">
-      <img src="${randomScreen}" alt="Game Over" style="width:100%; height:auto; display:block; max-height:70vh; object-fit:contain;">
-      <div style="display:flex; gap:16px; justify-content:center; padding:20px 0;">
+    <div class="endscreen-content">
+      <img src="${randomScreen}" alt="Game Over">
+      <div class="endscreen-actions">
         <button onclick="reloadGame()" class="endscreen-btn">Try Again</button>
         <button onclick="backToStart()" class="endscreen-btn">Back to Start</button>
       </div>
     </div>`;
 }
 
+/** Goes back to the start screen. */
 function backToStart() {
-  location.reload();
+  if (world) world.stopAllSounds();
+  document.getElementById("endscreen").classList.add("d-none");
+  document.getElementById("canvas").classList.add("d-none");
+  document.getElementById("startscreen").classList.remove("d-none");
+  document.getElementById("mainheadline").classList.remove("d-none");
+  hideGameUI();
+  showMenuBar();
+  level1 = resetLevel();
+  world = null;
 }
