@@ -1,14 +1,14 @@
 /**
- * Collision detection, enemy handling, collectibles, and throw logic for the World class.
+ * Collisions, collectibles and bottle throws.
  */
 
-/** Checks for collisions between the character, enemies, and bottles. */
+/** Checks all important collisions. */
 World.prototype.checkCollisions = function () {
   this.checkCharacterEnemyCollisions();
   this.checkBottleEnemyCollisions();
 };
 
-/** Checks for collisions between the character and enemies. */
+/** Checks if Pepe touches an enemy. */
 World.prototype.checkCharacterEnemyCollisions = function () {
   this.level.enemies.forEach((enemy) => {
     const hasCollision = enemy instanceof Endboss
@@ -18,10 +18,7 @@ World.prototype.checkCharacterEnemyCollisions = function () {
   });
 };
 
-/**
- * @param {Endboss} enemy
- * @returns {boolean}
- */
+/** Checks if Pepe touches the boss. */
 World.prototype.isBossColliding = function (enemy) {
   return (
     this.character.x + this.character.width - 20 >= enemy.x + 40 &&
@@ -31,7 +28,7 @@ World.prototype.isBossColliding = function (enemy) {
   );
 };
 
-/** Checks for collisions between thrown bottles and enemies. */
+/** Checks if a bottle hits an enemy. */
 World.prototype.checkBottleEnemyCollisions = function () {
   this.throwableObjects.forEach((bottle, bottleIndex) => {
     if (!bottle || bottle.isBroken) return;
@@ -44,11 +41,7 @@ World.prototype.checkBottleEnemyCollisions = function () {
   });
 };
 
-/**
- * @param {ThrowableBottle} bottle
- * @param {Endboss} enemy
- * @returns {boolean}
- */
+/** Checks if a bottle hits the boss. */
 World.prototype.isBottleHittingEndboss = function (bottle, enemy) {
   return (
     bottle.x + bottle.width - 10 >= enemy.x + 35 &&
@@ -58,11 +51,7 @@ World.prototype.isBottleHittingEndboss = function (bottle, enemy) {
   );
 };
 
-/**
- * Handles a collision between a bottle and an enemy.
- * @param {number} bottleIndex - Index of the colliding bottle.
- * @param {MovableObject} enemy - The hit enemy.
- */
+/** Handles a bottle hit. */
 World.prototype.processBottleCollision = function (bottleIndex, enemy) {
   if (!enemy.isAlive && !(enemy instanceof Endboss)) return;
   const bottle = this.throwableObjects[bottleIndex];
@@ -87,10 +76,7 @@ World.prototype.processBottleCollision = function (bottleIndex, enemy) {
   }, 180);
 };
 
-/**
- * Handles a collision between the character and an enemy.
- * @param {MovableObject} enemy - The collided enemy.
- */
+/** Handles Pepe touching an enemy. */
 World.prototype.handleEnemyCollision = function (enemy) {
   if (enemy instanceof Endboss) {
     this.handleEndbossCollision();
@@ -99,7 +85,7 @@ World.prototype.handleEnemyCollision = function (enemy) {
   }
 };
 
-/** Handles a collision between the character and the endboss. */
+/** Handles Pepe touching the boss. */
 World.prototype.handleEndbossCollision = function () {
   const didHit = this.character.hit(10);
   if (didHit) {
@@ -112,15 +98,12 @@ World.prototype.handleEndbossCollision = function () {
   }
 };
 
-/**
- * Handles a collision between the character and a normal enemy.
- * @param {MovableObject} enemy - The collided enemy.
- */
+/** Handles Pepe touching a normal enemy. */
 World.prototype.handleNormalEnemyCollision = function (enemy) {
   if (this.isJumpingOnEnemy(enemy)) {
     this.killEnemy(enemy);
   } else {
-    const didHit = this.character.hit();
+    const didHit = this.character.hit(5);
     if (didHit) {
       this.playSound(this.character.hurt_sound);
       this.statusBar.setPercentage(this.character.energy);
@@ -128,22 +111,17 @@ World.prototype.handleNormalEnemyCollision = function (enemy) {
   }
 };
 
-/**
- * Checks if the character is jumping on an enemy.
- * @param {MovableObject} enemy
- * @returns {boolean}
- */
+/** Checks if Pepe lands on an enemy. */
 World.prototype.isJumpingOnEnemy = function (enemy) {
+  const characterFeet = this.character.y + this.character.height - this.character.offset.bottom;
+  const enemyTop = enemy.y + enemy.offset.top;
   return (
     this.character.speedY < 0 &&
-    this.character.y + this.character.height - 10 < enemy.y + enemy.height / 2
+    characterFeet <= enemyTop + enemy.height * 0.45
   );
 };
 
-/**
- * Kills an enemy and removes it from the game world.
- * @param {MovableObject} enemy - The enemy.
- */
+/** Kills an enemy and removes it later. */
 World.prototype.killEnemy = function (enemy) {
   if (enemy.isAlive) {
     enemy.isAlive = false;
@@ -156,13 +134,13 @@ World.prototype.killEnemy = function (enemy) {
   }
 };
 
-/** Checks for collectible objects (coins, bottles). */
+/** Checks bottles and coins. */
 World.prototype.checkCollectibles = function () {
   this.checkBottleCollectibles();
   this.checkCoinCollectibles();
 };
 
-/** Checks if bottles can be collected. */
+/** Checks if Pepe collects bottles. */
 World.prototype.checkBottleCollectibles = function () {
   for (let index = this.level.bottles.length - 1; index >= 0; index--) {
     const bottle = this.level.bottles[index];
@@ -177,7 +155,7 @@ World.prototype.checkBottleCollectibles = function () {
   }
 };
 
-/** Checks if coins can be collected. */
+/** Checks if Pepe collects coins. */
 World.prototype.checkCoinCollectibles = function () {
   for (let index = this.level.coins.length - 1; index >= 0; index--) {
     const coin = this.level.coins[index];
@@ -190,34 +168,35 @@ World.prototype.checkCoinCollectibles = function () {
   }
 };
 
-/** Checks if a bottle should be thrown. */
+/** Checks if Pepe should throw a bottle. */
 World.prototype.checkThrowObjects = function () {
+  if (!this.keyboard.KEY_D) {
+    this.bottleThrowLocked = false;
+    return;
+  }
+
   if (this.isBottleThrowReady()) {
     this.throwBottle();
     this.updateBottleStatus();
   }
 };
 
-/**
- * Checks if the character is ready to throw a bottle.
- * @returns {boolean}
- */
+/** Checks if a bottle throw is allowed. */
 World.prototype.isBottleThrowReady = function () {
   const currentTime = new Date().getTime();
   return (
     this.keyboard.KEY_D &&
+    !this.bottleThrowLocked &&
     this.bottles > 0 &&
     currentTime - this.lastThrowTime > 500
   );
 };
 
-/**
- * Creates and throws a bottle in the direction the character is facing.
- * @returns {void}
- */
+/** Creates and throws one bottle. */
 World.prototype.throwBottle = function () {
   if (this.gameOver) return;
   this.lastThrowTime = new Date().getTime();
+  this.bottleThrowLocked = true;
   let direction = this.character.isLookingLeft() ? "left" : "right";
   let bottle = new ThrowableBottle(
     this.character.x + (direction === "left" ? -20 : 60),
@@ -228,7 +207,7 @@ World.prototype.throwBottle = function () {
   this.throwableObjects.push(bottle);
 };
 
-/** Updates the bottle status bar after a throw. */
+/** Updates the bottle bar after a throw. */
 World.prototype.updateBottleStatus = function () {
   this.bottles--;
   this.bottlesStatusBar.setPercentage(
@@ -236,7 +215,7 @@ World.prototype.updateBottleStatus = function () {
   );
 };
 
-/** Checks if the endboss should be activated. */
+/** Checks if the boss should start. */
 World.prototype.checkEndbossSpawn = function () {
   const endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
   if (endboss && !endboss.hadFirstContact && this.character.x + 500 > endboss.x) {
@@ -245,10 +224,7 @@ World.prototype.checkEndbossSpawn = function () {
   }
 };
 
-/**
- * Updates the status bar of the endboss.
- * @param {Endboss} endboss - The endboss.
- */
+/** Updates the boss bar. */
 World.prototype.updateEndbossStatusBar = function (endboss) {
   const percentage = (endboss.energy / 25) * 100;
   this.endbossStatusBar.setPercentage(percentage);

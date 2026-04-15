@@ -3,14 +3,15 @@ class Coin extends CollectableObject {
   width = 175;
   y = 245;
   offset = {
-    top: 60,
-    bottom: 120,
-    left: 120,
-    right: 60,
+    top: 45,
+    bottom: 45,
+    left: 45,
+    right: 45,
   };
-  collect_sound = new Audio("./audio/collect_coin.wav");
+  collect_sound = new Audio("./audio/collect_coin.mp3");
   IMAGES = ["img/8_coin/coin_1.png", "img/8_coin/coin_2.png"];
 
+  /** Creates one coin. */
   constructor(x) {
     super().loadImage(this.IMAGES[0]);
     this.loadImages(this.IMAGES);
@@ -19,6 +20,7 @@ class Coin extends CollectableObject {
     this.animate();
   }
 
+  /** Animates the coin. */
   animate() {
     setInterval(() => this.playAnimation(this.IMAGES), 300);
   }

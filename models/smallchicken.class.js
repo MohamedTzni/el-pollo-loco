@@ -3,10 +3,10 @@ class Smallchicken extends MovableObject {
   height = 60;
   width = 60;
   offset = {
-    top: 5,
-    bottom: 10,
-    left: 10,
-    right: 5,
+    top: 8,
+    bottom: 8,
+    left: 12,
+    right: 12,
   };
   IMAGES_WALKING = [
     "img/3_enemies_chicken/chicken_small/1_walk/1_w.png",
@@ -18,6 +18,7 @@ class Smallchicken extends MovableObject {
     "img/3_enemies_chicken/chicken_small/2_dead/dead.png",
   ];
 
+  /** Creates a small chicken enemy. */
   constructor(x = 400) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);

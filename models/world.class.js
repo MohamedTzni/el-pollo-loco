@@ -1,5 +1,5 @@
 /**
- * Properties of the game world, including the character, level, and interactions.
+ * Main game world.
  */
 class World {
   baseWidth = 720;
@@ -20,20 +20,17 @@ class World {
   maxCoins = 10;
   throwableObjects = [];
   lastThrowTime = 0;
+  bottleThrowLocked = false;
   intervals = [];
   gameOver = false;
   gameWon = false;
   endScreenTriggered = false;
   showEndbossStatusBar = false;
-  chickenHurt_sound = new Audio("./audio/chickenouch.wav");
-  throwBottle_sound = new Audio("./audio/collect_bottle.wav");
+  chickenHurt_sound = new Audio("./audio/chickenouch.mp3");
+  throwBottle_sound = new Audio("./audio/collect_bottle.mp3");
   backgroundMusic = new Audio("./audio/background.mp3");
 
-  /**
-   * Constructor of the World class, initializes the canvas, inputs, and game components.
-   * @param {HTMLCanvasElement} canvas - The canvas element where the game is drawn.
-   * @param {Keyboard} keyboard - Object for managing keyboard inputs.
-   */
+  /** Sets up the world. */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
@@ -47,16 +44,15 @@ class World {
     this.run();
   }
 
-  /**
-   * Links the world to the character.
-   */
+  /** Gives Pepe access to the world. */
   setWorld() {
     this.character.world = this;
+    if (typeof this.character.resetIdleTimer === "function") {
+      this.character.resetIdleTimer();
+    }
   }
 
-  /**
-   * Assigns the character to each endboss in the level so they can react to it.
-   */
+  /** Gives the endboss access to Pepe. */
   assignCharacterToEnemies() {
     this.level.enemies.forEach((enemy) => {
       if (enemy instanceof Endboss) {
@@ -66,9 +62,7 @@ class World {
     });
   }
 
-  /**
-   * Main game loop: repeatedly performs collision checks, status updates, etc.
-   */
+  /** Starts the game checks. */
   run() {
     this.addInterval(() => {
       if (this.gameOver) return;
@@ -84,29 +78,19 @@ class World {
     }, 100);
   }
 
-  /**
-   * Adds a periodically executed function (interval).
-   * @param {Function} fn - The function to execute.
-   * @param {number} time - Execution frequency in milliseconds.
-   * @returns {number} - The ID of the created interval.
-   */
+  /** Adds an interval and saves its id. */
   addInterval(fn, time) {
     const id = setInterval(fn, time);
     this.intervals.push(id);
     return id;
   }
 
-  /**
-   * Stops all active intervals stored in the intervals list.
-   */
+  /** Stops all saved intervals. */
   clearAllIntervals() {
     this.intervals.forEach(clearInterval);
   }
 
-  /**
-   * Ends the game and displays the corresponding end screen.
-   * @param {boolean} win - Whether the player has won.
-   */
+  /** Stops the game. */
   stopGame(win = false) {
     if (this.gameOver) return;
     this.gameWon = win;
@@ -118,9 +102,7 @@ class World {
     }
   }
 
-  /**
-   * Stops all sounds and resets them to the beginning.
-   */
+  /** Stops all game sounds. */
   stopAllSounds() {
     const sounds = [
       this.backgroundMusic,
@@ -139,10 +121,7 @@ class World {
     });
   }
 
-  /**
-   * Displays the end screen (win or lose).
-   * @param {boolean} win - Whether the player has won.
-   */
+  /** Shows the end screen. */
   showEndScreen(win) {
     this.gameWon = win;
     if (typeof window.showEndScreen === "function") {
@@ -150,10 +129,7 @@ class World {
     }
   }
 
-  /**
-   * Plays a sound if sound is not muted.
-   * @param {HTMLAudioElement} sound - The sound to play.
-   */
+  /** Plays a sound when sound is on. */
   playSound(sound) {
     if (!sound) return;
     sound.muted = typeof isSoundMuted !== "undefined" ? isSoundMuted : false;
@@ -167,7 +143,7 @@ class World {
     } catch {}
   }
 
-  /** @returns {number} Index of item in array. */
+  /** Gets the index of an item. */
   getIndexOfItem(array, item) {
     return array.indexOf(item);
   }
@@ -177,15 +153,12 @@ class World {
     this.stopGame(win);
   }
 
-  /** @returns {boolean} Whether the endboss status bar is already shown. */
+  /** Checks if the endboss bar is shown. */
   endbossStatusBarAlreadyExists() {
     return this.showEndbossStatusBar;
   }
 
-  /**
-   * Checks if the game is over based on character or endboss status.
-   * @returns {void}
-   */
+  /** Checks if the game is over. */
   checkGameOver() {
     if (this.endScreenTriggered) return;
 
@@ -201,10 +174,7 @@ class World {
     }
   }
 
-  /**
-   * Checks if the endboss has been defeated.
-   * @returns {boolean} - True if the endboss is dead.
-   */
+  /** Checks if the endboss is dead. */
   isEndbossDead() {
     return this.level.enemies.some(
       (enemy) => enemy instanceof Endboss && enemy.isDead()

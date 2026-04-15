@@ -1,10 +1,7 @@
 /**
- * Repräsentiert die Hauptfigur "Pepe" im Spiel, erweitert die MovableObject-Klasse.
- * Steuert Bewegung, Animationen und Soundeffekte des Charakters.
- * @extends MovableObject
+ * Main character Pepe.
  */
 class Pepe extends MovableObject {
-  // --- Eigenschaften ---
   x = 20;
   y = 128;
   acceleration = 2.2;
@@ -12,9 +9,8 @@ class Pepe extends MovableObject {
   height = 300;
   width = 150;
   speed = 7;
-  offset = { top: 140, bottom: 160, left: 90, right: 40 };
+  offset = { top: 115, bottom: 20, left: 45, right: 35 };
 
-  // --- Animation-Frames ---
   IMAGES_IDLE = [
     "img/2_character_pepe/1_idle/idle/I-1.png",
     "img/2_character_pepe/1_idle/idle/I-2.png",
@@ -77,37 +73,29 @@ class Pepe extends MovableObject {
     "img/2_character_pepe/1_idle/long_idle/I-20.png",
   ];
 
-  // --- Referenzen ---
   world;
-  walking_sound = new Audio("./audio/running_sand.wav");
-  hurt_sound = new Audio("./audio/hurt.wav");
-  dead_sound = new Audio("./audio/ohno.wav");
-  jump_sound = new Audio("./audio/jump.wav");
-
-  // --- Inaktivitäts-Tracking ---
+  walking_sound = new Audio("./audio/running_sand.mp3");
+  hurt_sound = new Audio("./audio/hurt.mp3");
+  dead_sound = new Audio("./audio/ohno.mp3");
+  jump_sound = new Audio("./audio/jump.mp3");
   lastMoveTime = Date.now();
-  idleTimeoutMs = 4000;
+  idleTimeoutMs = 12000;
   flippedGraphics = false;
-
-  // --- Death-Guard ---
   deathHandled = false;
+  hitCooldown = 1400;
 
-  /**
-   * Erzeugt eine neue Pepe-Instanz und initialisiert Animationen, Sounds und Bewegung.
-   */
+  /** Creates Pepe and starts his animation. */
   constructor() {
     super();
     this.loadAllImages();
     this.loadImage(this.IMAGES_IDLE[0]);
+    this.resetIdleTimer();
     this.configureSounds();
     this.applyGravity();
     this.animate();
   }
 
-  /**
-   * Lädt alle Bild-Arrays für die Animationen.
-   * @private
-   */
+  /** Loads all Pepe images. */
   loadAllImages() {
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_WALKING);
@@ -117,10 +105,7 @@ class Pepe extends MovableObject {
     this.loadImages(this.IMAGES_LONGIDLE);
   }
 
-  /**
-   * Konfiguriert die Sound-Eigenschaften.
-   * @private
-   */
+  /** Sets the sound values. */
   configureSounds() {
     this.walking_sound.playbackRate = 2;
     this.hurt_sound.playbackRate = 2;
@@ -129,40 +114,28 @@ class Pepe extends MovableObject {
     this.dead_sound.volume = 0.3;
   }
 
-  /**
-   * Startet die Animations-Intervalle.
-   * @private
-   */
+  /** Starts Pepe's intervals. */
   animate() {
     setInterval(() => this.moveCharacter(), 1000 / 60);
     setInterval(() => this.playCharacterAnimations(), 8000 / 60);
   }
 
-  /**
-   * Bewegt den Charakter basierend auf Tastatureingaben.
-   * @private
-   */
+  /** Moves Pepe with the keyboard. */
   moveCharacter() {
     this.walking_sound.pause();
-
     if (this.canMoveRight()) this.moveRight();
     if (this.canMoveLeft()) this.moveLeft();
-
     if (this.canJump()) {
       this.world.playSound(this.jump_sound);
       this.jump();
       this.updateLastMoveTime();
     }
-
     this.world.camera_x = -this.x + 75;
   }
 
-  /**
-   * Spielt die entsprechenden Animationen basierend auf dem Zustand des Charakters.
-   * @private
-   */
+  /** Plays the right Pepe animation. */
   playCharacterAnimations() {
-    if (this.isDead && typeof this.isDead === 'function' ? this.isDead() : this.energy <= 0) {
+    if (this.isDead && typeof this.isDead === "function" ? this.isDead() : this.energy <= 0) {
       this.handleDeath();
     } else if (this.isHurt && this.isHurt()) {
       this.handleHurt();
@@ -175,14 +148,10 @@ class Pepe extends MovableObject {
     }
   }
 
-  /**
-   * Behandelt den Tod des Charakters (einmalig).
-   * @private
-   */
+  /** Starts the death animation once. */
   handleDeath() {
     if (this.deathHandled) return;
     this.deathHandled = true;
-
     this.playDyingAnimation();
     this.hurt_sound.pause();
     this.walking_sound.pause();
@@ -190,31 +159,24 @@ class Pepe extends MovableObject {
     this.world.playSound(this.dead_sound);
   }
 
-  /**
-   * Behandelt den Verletzungszustand des Charakters.
-   * @private
-   */
+  /** Shows the hurt animation. */
   handleHurt() {
     this.hurt_sound.pause();
     this.playAnimation(this.IMAGES_HURT);
   }
 
-  /**
-   * Behandelt die Bewegungsanimation des Charakters.
-   * @private
-   */
+  /** Shows the walk animation. */
   handleMovement() {
     this.playAnimation(this.IMAGES_WALKING);
     this.y = this.ground;
   }
 
-  /**
-   * Behandelt die Idle-Animation basierend auf Inaktivitätsdauer.
-   * @private
-   */
+  /** Shows idle or sleeping animation. */
   handleIdle() {
     const now = Date.now();
-    if (this.world?.showEndbossStatusBar || this.isEnemyNearby()) {
+    if (!this.hasBeenInactiveLongEnough()) {
+      this.playAnimation(this.IMAGES_IDLE);
+    } else if (this.world?.showEndbossStatusBar || this.isEnemyNearby()) {
       this.playAnimation(this.IMAGES_IDLE);
     } else if (now - this.lastMoveTime > this.idleTimeoutMs) {
       this.playAnimation(this.IMAGES_LONGIDLE);
@@ -223,57 +185,76 @@ class Pepe extends MovableObject {
     }
   }
 
+  /** Checks if Pepe was idle long enough. */
+  hasBeenInactiveLongEnough() {
+    return Date.now() - this.lastMoveTime > this.idleTimeoutMs;
+  }
+
+  /** Checks if an enemy is close to Pepe. */
   isEnemyNearby() {
     return this.world?.level?.enemies?.some(
       (enemy) => enemy?.isAlive !== false && Math.abs(enemy.x - this.x) < 500
     );
   }
 
-  // ---- Bewegungsfunktionen ----
-
+  /** Checks if Pepe can move right. */
   canMoveRight() {
     return (
       this.world.keyboard.KEY_RIGHT && this.x < this.world.level.end_of_level_x
     );
   }
 
+  /** Moves Pepe right. */
   moveRight() {
     super.moveRight();
     if (!this.isAboveGround()) this.world.playSound(this.walking_sound);
     this.flippedGraphics = false;
+    this.otherDirection = false;
     this.updateLastMoveTime();
   }
 
+  /** Checks if Pepe can move left. */
   canMoveLeft() {
     return this.world.keyboard.KEY_LEFT && this.x > 0;
   }
 
+  /** Moves Pepe left. */
   moveLeft() {
     super.moveLeft();
     if (!this.isAboveGround()) this.world.playSound(this.walking_sound);
     this.flippedGraphics = true;
+    this.otherDirection = true;
     this.updateLastMoveTime();
   }
 
+  /** Checks if Pepe looks left. */
   isLookingLeft() {
-    return this.flippedGraphics;
+    return this.otherDirection === true;
   }
 
+  /** Checks if Pepe is moving. */
   isMoving() {
     return this.world.keyboard.KEY_RIGHT || this.world.keyboard.KEY_LEFT;
   }
 
+  /** Checks if Pepe can jump. */
   canJump() {
     return this.world.keyboard.KEY_SPACE && !this.isAboveGround();
   }
 
+  /** Saves the current time as last move time. */
   updateLastMoveTime() {
     this.lastMoveTime = Date.now();
   }
 
-  /**
-   * Spielt die Sterbeanimation des Charakters (einmalige Sequenz).
-   */
+  /** Resets the idle timer. */
+  resetIdleTimer() {
+    this.lastMoveTime = Date.now();
+    this.currentImage = 0;
+    this.loadImage(this.IMAGES_IDLE[0]);
+  }
+
+  /** Plays Pepe's death move. */
   playDyingAnimation() {
     this.playAnimation(this.IMAGES_DEAD);
     setTimeout(() => {
