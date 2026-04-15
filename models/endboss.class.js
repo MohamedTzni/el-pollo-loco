@@ -46,10 +46,11 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/5_dead/G25.png",
     "img/4_enemie_boss_chicken/5_dead/G26.png",
   ];
-  endbossDead_sound = new Audio("./audio/win.wav");
+  endbossDead_sound = new Audio("./audio/win.mp3");
   hadFirstHit = false;
   hadFirstContact = false;
 
+  /** Creates the endboss. */
   constructor(x = 3600) {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
@@ -65,9 +66,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Handles boss damage separately from the default character damage logic.
-   * The boss should take small, frequent bottle hits instead of using Pepe's long hit cooldown.
-   * @returns {boolean} True when the hit was accepted.
+   * Reduces the boss energy when a bottle hits him.
    */
   hit() {
     const now = new Date().getTime();
@@ -90,10 +89,17 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * The function animates the endboss character and displays its health bar when the player character
-   * comes within a certain distance.
+   * Starts the movement and animation intervals.
    */
   animate() {
+    this.startMovementLoop();
+    this.startAnimationLoop();
+  }
+
+  /**
+   * Moves the boss after he sees Pepe.
+   */
+  startMovementLoop() {
     setInterval(() => {
       if (!this.character || !this.hadFirstContact || this.isDead()) return;
       if (this.character.x < this.x - 30) {
@@ -102,33 +108,50 @@ class Endboss extends MovableObject {
         this.moveRight();
       }
     }, 1000 / 60);
+  }
 
+  /**
+   * Starts the boss animation loop.
+   */
+  startAnimationLoop() {
     setInterval(() => {
       if (!this.character) return;
 
-      if (this.character.x > this.x - 500 && !this.hadFirstContact) {
-        this.hadFirstContact = true;
-        if (this.world) {
-          this.world.showEndbossStatusBar = true;
-        }
-      }
+      this.activateOnCharacterDistance();
 
       if (!this.hadFirstContact) return;
 
-      if (this.isDead()) {
-        this.playEndbossDying();
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-      } else if (this.hadFirstHit) {
-        this.playAnimation(this.IMAGES_ATTACK);
-      } else {
-        this.playAnimation(this.IMAGES_WALKING);
-      }
+      this.playCurrentAnimation();
     }, 180);
   }
 
   /**
-   * The function checks if the endboss is dead or hurt and plays the appropriate sound or animation.
+   * Shows the boss bar when Pepe is close enough.
+   */
+  activateOnCharacterDistance() {
+    if (this.character.x > this.x - 500 && !this.hadFirstContact) {
+      this.hadFirstContact = true;
+      if (this.world) this.world.showEndbossStatusBar = true;
+    }
+  }
+
+  /**
+   * Plays the right boss animation.
+   */
+  playCurrentAnimation() {
+    if (this.isDead()) {
+      this.playEndbossDying();
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+    } else if (this.hadFirstHit) {
+      this.playAnimation(this.IMAGES_ATTACK);
+    } else {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
+  }
+
+  /**
+   * Plays the hit or death animation.
    */
   playEndbossGotHit() {
     if (this.isDead()) {
@@ -145,7 +168,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * The function plays an animation of the end boss dying and moves it down by 30 units.
+   * Plays the death animation.
    */
   playEndbossDying() {
     if (!this.dyingStarted) {
@@ -161,11 +184,7 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * The function plays different animations for an end boss character based on the value of the input
-   * parameter.
-   * @param i - The parameter "i" is a number that is used to determine which animation to play in the
-   * "playEndbossAnimationLoop" function. It is likely used as a counter or timer to control the timing
-   * and sequence of the different animations.
+   * Old animation helper, kept so older calls do not break.
    */
   playEndbossAnimationLoop() {}
 }
