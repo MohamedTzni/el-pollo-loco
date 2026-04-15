@@ -1,33 +1,31 @@
-<!-- overlay.html -->
-<div id="explanationOverlay" class="overlay">
+<div id="explanationOverlay" class="overlay" aria-hidden="true">
   <div
     class="overlay-content"
     role="dialog"
     aria-modal="true"
     aria-labelledby="overlayTitle"
   >
-    <button class="close-btn" aria-label="Schließen" id="overlay-close">
+    <button class="close-btn" aria-label="Schliessen" data-close-overlay>
       &times;
     </button>
 
-    <h2 id="overlayTitle">Spiel-Erklärung – El Pollo Loco</h2>
+    <h2 id="overlayTitle">Spiel-Erklaerung - El Pollo Loco</h2>
 
     <p>
-      Willkommen! In <b>El Pollo Loco</b> spielst du <b>Pepe</b>. Sammle Münzen
-      und Flaschen, weiche Gegnern aus und bezwinge den Endboss. Nach wenigen
-      Minuten hast du die Steuerung im Griff.
+      Willkommen! In <b>El Pollo Loco</b> spielst du <b>Pepe</b>. Sammle
+      Muenzen und Flaschen, weiche Gegnern aus und bezwinge den Endboss. Nach
+      wenigen Minuten hast du die Steuerung im Griff.
     </p>
 
     <hr class="overlay-divider" />
 
-    <!-- Steuerung -->
     <section aria-labelledby="controlsTitle">
       <h3 id="controlsTitle">Steuerung</h3>
       <div class="grid-2">
         <div class="card">
           <div class="card-title">Bewegen</div>
           <div>
-            <span class="key"><kbd>←</kbd> / <kbd>→</kbd></span>
+            <span class="key"><kbd>Links</kbd> / <kbd>Rechts</kbd></span>
             <span>Links / Rechts</span>
           </div>
         </div>
@@ -44,7 +42,7 @@
           <div class="card-title">Flasche werfen</div>
           <div>
             <span class="key"><kbd>D</kbd></span>
-            <span>Zielen &amp; treffen</span>
+            <span>Zielen und treffen</span>
           </div>
         </div>
       </div>
@@ -52,31 +50,82 @@
 
     <hr class="overlay-divider" />
 
-    <!-- Ziel -->
     <section aria-labelledby="goalTitle">
       <h3 id="goalTitle">Ziel</h3>
       <ul>
-        <li>💰 Münzen einsammeln (Punkte)</li>
-        <li>🍾 Flaschen sammeln und gezielt einsetzen</li>
-        <li>🐔 Gegnern ausweichen oder sie ausschalten</li>
-        <li>👑 Den Endboss besiegen</li>
+        <li>Muenzen einsammeln.</li>
+        <li>Flaschen sammeln und gezielt einsetzen.</li>
+        <li>Gegnern ausweichen oder sie ausschalten.</li>
+        <li>Den Endboss besiegen.</li>
       </ul>
     </section>
 
     <hr class="overlay-divider" />
 
-    <!-- Tipps -->
     <section aria-labelledby="tipsTitle">
       <h3 id="tipsTitle">Tipps</h3>
       <div class="callout">
         <ul>
-          <li>❤️ Behalte die Lebensanzeige im Blick.</li>
-          <li>⏱️ Wirf Flaschen sparsam – Timing schlägt Menge.</li>
-          <li>🦘 Springe über Gegner, um Treffer zu vermeiden.</li>
+          <li>Behalte die Lebensanzeige im Blick.</li>
+          <li>Wirf Flaschen sparsam - Timing schlaegt Menge.</li>
+          <li>Springe ueber Gegner, um Treffer zu vermeiden.</li>
         </ul>
       </div>
     </section>
 
-    <p style="margin-top: 16px">Viel Erfolg – und hab Spaß beim Spielen! ✨</p>
+    <p style="margin-top: 16px">Viel Erfolg - und hab Spass beim Spielen!</p>
+  </div>
+</div>
+
+<div id="impressumOverlay" class="overlay" aria-hidden="true">
+  <div
+    class="overlay-content impressum-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="impressumTitle"
+  >
+    <button class="close-btn" aria-label="Schliessen" data-close-overlay>
+      &times;
+    </button>
+
+    <h2 id="impressumTitle">Impressum</h2>
+
+    <h3>Angaben gemaess Paragraf 5 TMG</h3>
+    <p>
+      Max Mustermann<br />
+      Musterstrasse 1<br />
+      12345 Musterstadt, Germany
+    </p>
+
+    <h3>Kontakt</h3>
+    <p>E-Mail: <a href="mailto:kontakt@example.com">kontakt@example.com</a></p>
+
+    <h3>Hinweis</h3>
+    <p>
+      Dieses Spiel (El Pollo Loco) wird als nichtkommerzielles Privatprojekt
+      zur Praesentation meiner Arbeit als Fullstack Developer gehostet.
+    </p>
+
+    <h3>Inhaltliche Verantwortung</h3>
+    <p>
+      Die Inhalte dieser Website wurden mit groesster Sorgfalt erstellt. Fuer
+      die Richtigkeit, Vollstaendigkeit und Aktualitaet der Inhalte kann jedoch
+      keine Gewaehr uebernommen werden.
+    </p>
+
+    <h3>Haftung fuer externe Links</h3>
+    <p>
+      Diese Website kann Links zu externen Webseiten enthalten, auf deren
+      Inhalte ich keinen Einfluss habe. Fuer die Inhalte der verlinkten Seiten
+      ist stets der jeweilige Anbieter oder Betreiber verantwortlich.
+    </p>
+
+    <h3>Urheberrecht</h3>
+    <p>
+      Die durch mich erstellten Inhalte und Werke auf diesen Seiten unterliegen
+      dem deutschen Urheberrecht. Vervielfaeltigung, Bearbeitung, Verbreitung
+      und jede Art der Verwertung ausserhalb der Grenzen des Urheberrechts
+      beduerfen meiner schriftlichen Zustimmung.
+    </p>
   </div>
 </div>

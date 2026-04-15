@@ -1,39 +1,59 @@
-document.addEventListener("DOMContentLoaded", () => { 
+document.addEventListener("DOMContentLoaded", () => {
   fetch("overlay.html")
-    .then((r) => {
-      if (!r.ok) throw new Error(`overlay.html ${r.status}`);
-      return r.text();
+    .then((response) => {
+      if (!response.ok) throw new Error(`overlay.html ${response.status}`);
+      return response.text();
     })
     .then((html) => {
       document.body.insertAdjacentHTML("beforeend", html);
-
-      const btnExplain = document.getElementById("btn-explain");
-      const overlay = document.getElementById("explanationOverlay");
-      const btnClose = document.getElementById("overlay-close");
-
-      btnExplain.addEventListener("click", () => {
-        overlay.classList.add("show");
-        overlay.setAttribute("aria-hidden", "false");
-      });
-
-      const closeOverlay = () => {
-        overlay.classList.remove("show");
-        overlay.setAttribute("aria-hidden", "true");
-      };
-      btnClose.addEventListener("click", closeOverlay);
-      overlay.addEventListener("click", (e) => {
-        if (e.target.id === "explanationOverlay") closeOverlay();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeOverlay();
-      });
-
-      const btnImpressum = document.getElementById("btn-impressum");
-      if (btnImpressum) {
-        btnImpressum.addEventListener("click", () => {
-          window.location.href = "impressum.html";
-        });
-      }
+      bindOverlayButton("btn-explain", "explanationOverlay");
+      bindOverlayButton("btn-impressum", "impressumOverlay");
+      bindOverlayCloseEvents();
     })
     .catch(() => {});
 });
+
+/** Connects one button with one overlay. */
+function bindOverlayButton(buttonId, overlayId) {
+  const button = document.getElementById(buttonId);
+  const overlay = document.getElementById(overlayId);
+  if (!button || !overlay) return;
+
+  button.addEventListener("click", () => openOverlay(overlay));
+}
+
+/** Adds all close events for the overlays. */
+function bindOverlayCloseEvents() {
+  document.querySelectorAll("[data-close-overlay]").forEach((button) => {
+    button.addEventListener("click", () => closeOverlay(button.closest(".overlay")));
+  });
+
+  document.querySelectorAll(".overlay").forEach((overlay) => {
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) closeOverlay(overlay);
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAllOverlays();
+  });
+}
+
+/** Opens one overlay. */
+function openOverlay(overlay) {
+  closeAllOverlays();
+  overlay.classList.add("show");
+  overlay.setAttribute("aria-hidden", "false");
+}
+
+/** Closes one overlay. */
+function closeOverlay(overlay) {
+  if (!overlay) return;
+  overlay.classList.remove("show");
+  overlay.setAttribute("aria-hidden", "true");
+}
+
+/** Closes all open overlays. */
+function closeAllOverlays() {
+  document.querySelectorAll(".overlay.show").forEach(closeOverlay);
+}
