@@ -586,8 +586,8 @@ canvas {
   .endscreen-content {
     min-height: 100vh;
     min-height: 100dvh;
-    justify-content: flex-start;
-    padding-top: 10px;
+    justify-content: center;
+    padding: 10px 0;
     box-sizing: border-box;
   }
   .endscreen-actions {
