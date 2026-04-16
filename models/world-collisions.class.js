@@ -56,18 +56,26 @@ World.prototype.processBottleCollision = function (bottleIndex, enemy) {
   if (!enemy.isAlive && !(enemy instanceof Endboss)) return;
   const bottle = this.throwableObjects[bottleIndex];
   if (!bottle || bottle.isBroken) return;
-
   if (enemy instanceof Endboss) {
-    const didHit = enemy.hit();
-    if (didHit) {
-      enemy.hadFirstHit = true;
-      this.playSound(this.chickenHurt_sound);
-      this.updateEndbossStatusBar(enemy);
-    }
+    this.hitEndbossWithBottle(enemy);
   } else {
     this.killEnemy(enemy);
   }
+  this.removeBottle(bottle);
+};
 
+/** Hits the endboss with a bottle and updates his status bar. */
+World.prototype.hitEndbossWithBottle = function (enemy) {
+  const didHit = enemy.hit();
+  if (didHit) {
+    enemy.hadFirstHit = true;
+    this.playSound(this.chickenHurt_sound);
+    this.updateEndbossStatusBar(enemy);
+  }
+};
+
+/** Marks a bottle as broken and removes it from the world. */
+World.prototype.removeBottle = function (bottle) {
   bottle.isBroken = true;
   bottle.removeObject();
   setTimeout(() => {

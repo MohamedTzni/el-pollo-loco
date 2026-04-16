@@ -70,22 +70,20 @@ class Endboss extends MovableObject {
    */
   hit() {
     const now = new Date().getTime();
-    if (now - this.lastHit < 200 || this.isDead()) {
-      return false;
-    }
-
+    if (now - this.lastHit < 200 || this.isDead()) return false;
     this.lastHit = now;
-    this.energy -= 5;
     this.hadFirstHit = true;
+    this.reduceEnergy();
+    return true;
+  }
 
+  /** Reduces the boss energy by 5 and plays the death sound if dead. */
+  reduceEnergy() {
+    this.energy -= 5;
     if (this.energy <= 0) {
       this.energy = 0;
-      if (this.world) {
-        this.world.playSound(this.endbossDead_sound);
-      }
+      if (this.world) this.world.playSound(this.endbossDead_sound);
     }
-
-    return true;
   }
 
   /**

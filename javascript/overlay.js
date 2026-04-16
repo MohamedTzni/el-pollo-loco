@@ -18,22 +18,34 @@ function bindOverlayButton(buttonId, overlayId) {
   const button = document.getElementById(buttonId);
   const overlay = document.getElementById(overlayId);
   if (!button || !overlay) return;
-
   button.addEventListener("click", () => openOverlay(overlay));
 }
 
 /** Adds all close events for the overlays. */
 function bindOverlayCloseEvents() {
+  bindCloseButtons();
+  bindBackdropClick();
+  bindEscapeKey();
+}
+
+/** Closes the overlay when a close button is clicked. */
+function bindCloseButtons() {
   document.querySelectorAll("[data-close-overlay]").forEach((button) => {
     button.addEventListener("click", () => closeOverlay(button.closest(".overlay")));
   });
+}
 
+/** Closes the overlay when clicking outside of it. */
+function bindBackdropClick() {
   document.querySelectorAll(".overlay").forEach((overlay) => {
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay) closeOverlay(overlay);
     });
   });
+}
 
+/** Closes all overlays when Escape is pressed. */
+function bindEscapeKey() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeAllOverlays();
   });

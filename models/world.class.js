@@ -104,7 +104,16 @@ class World {
 
   /** Stops all game sounds. */
   stopAllSounds() {
-    const sounds = [
+    const sounds = this.getAllSounds();
+    sounds.forEach((sound) => {
+      if (!sound) return;
+      try { sound.pause(); sound.currentTime = 0; } catch {}
+    });
+  }
+
+  /** Returns all game sounds as an array. */
+  getAllSounds() {
+    return [
       this.backgroundMusic,
       this.chickenHurt_sound,
       this.throwBottle_sound,
@@ -114,11 +123,6 @@ class World {
       this.character?.jump_sound,
       this.level?.enemies?.find((enemy) => enemy instanceof Endboss)?.endbossDead_sound,
     ];
-
-    sounds.forEach((sound) => {
-      if (!sound) return;
-      try { sound.pause(); sound.currentTime = 0; } catch {}
-    });
   }
 
   /** Shows the end screen. */

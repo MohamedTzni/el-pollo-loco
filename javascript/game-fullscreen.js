@@ -1,31 +1,29 @@
-// Fullscreen
-
 /** Switches fullscreen on or off. */
 function toggleFullscreen() {
   let fullscreen = document.getElementById("fullscreen");
-  let body = document.body;
   let canvasEl = document.getElementById("canvas");
-
   if (!isFullScreen) {
-    fullscreen.classList.add("fullscreen");
-    body.classList.add("fullscreen-enabled");
-    canvasEl.classList.add("fullscreen");
-    document.getElementById("endscreen").classList.add("fullscreen");
-    document.getElementById("mainheadline").classList.add("d-none");
-
-    canvasEl.width = window.innerWidth;
-    canvasEl.height = window.innerHeight;
-    canvasEl.style.width = "100vw";
-    canvasEl.style.height = "100vh";
-    canvasEl.style.objectFit = "fill";
-
+    applyFullscreenClasses(fullscreen, canvasEl);
     enterFullscreen(fullscreen);
     isFullScreen = true;
-
     hideMenuBar();
   } else {
     leaveFullscreen();
   }
+}
+
+/** Adds the fullscreen CSS classes and resizes the canvas. */
+function applyFullscreenClasses(fullscreen, canvasEl) {
+  fullscreen.classList.add("fullscreen");
+  document.body.classList.add("fullscreen-enabled");
+  canvasEl.classList.add("fullscreen");
+  document.getElementById("endscreen").classList.add("fullscreen");
+  document.getElementById("mainheadline").classList.add("d-none");
+  canvasEl.width = window.innerWidth;
+  canvasEl.height = window.innerHeight;
+  canvasEl.style.width = "100vw";
+  canvasEl.style.height = "100vh";
+  canvasEl.style.objectFit = "fill";
 }
 
 window.addEventListener("resize", () => {
@@ -71,25 +69,32 @@ function fullscreenchangelog() {
 /** Resets the page after fullscreen mode. */
 function leaveFullscreen() {
   if (isFullScreen) {
-    let fullscreen = document.getElementById("fullscreen");
-    fullscreen.classList.remove("fullscreen");
-    document.body.classList.remove("fullscreen-enabled");
-    let canvasEl = document.getElementById("canvas");
-    canvasEl.classList.remove("fullscreen");
-    document.getElementById("endscreen").classList.remove("fullscreen");
-    document.getElementById("mainheadline").classList.remove("d-none");
-
-    canvasEl.style.width = "100%";
-    canvasEl.style.height = "auto";
-    canvasEl.style.objectFit = "initial";
-
-    canvasEl.width = 720;
-    canvasEl.height = 480;
+    removeFullscreenClasses();
     isFullScreen = false;
   }
+  updateMenuBarAfterFullscreen();
+}
 
+/** Removes fullscreen CSS classes and resets the canvas size. */
+function removeFullscreenClasses() {
+  let fullscreen = document.getElementById("fullscreen");
+  let canvasEl = document.getElementById("canvas");
+  fullscreen.classList.remove("fullscreen");
+  document.body.classList.remove("fullscreen-enabled");
+  canvasEl.classList.remove("fullscreen");
+  document.getElementById("endscreen").classList.remove("fullscreen");
+  document.getElementById("mainheadline").classList.remove("d-none");
+  canvasEl.style.width = "100%";
+  canvasEl.style.height = "auto";
+  canvasEl.style.objectFit = "initial";
+  canvasEl.width = 720;
+  canvasEl.height = 480;
+}
+
+/** Shows or hides the menu bar after leaving fullscreen. */
+function updateMenuBarAfterFullscreen() {
   const canvasHidden = document.getElementById("canvas").classList.contains("d-none");
-  const onEndscreen  = !document.getElementById("endscreen").classList.contains("d-none");
+  const onEndscreen = !document.getElementById("endscreen").classList.contains("d-none");
   if (canvasHidden || onEndscreen) {
     showMenuBar();
   } else {

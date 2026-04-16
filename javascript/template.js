@@ -67,7 +67,7 @@ function showFullscreenSection() {
   return /*html*/ `
   <section id="fullscreen-controls" class="flex-center">
     <button title="Fullscreen" id="btn-fullscreen" class="d-none"><img class="img-ctrl" src="img/1_controls/fullscreen.png"></button>
-    <button title="Sound an/aus" id="btn-sound" class="d-none"><img class="img-ctrl" id="img-sound" src="img/1_controls/loud.png"></button>
+    <button title="Sound on/off" id="btn-sound" class="d-none"><img class="img-ctrl" id="img-sound" src="img/1_controls/loud.png"></button>
     <button title="Info" id="infobtn"><img class="img-ctrl" src="img/1_controls/info.png"></button>
   </section>
 `;
@@ -88,24 +88,32 @@ function showStartScreen() {
   <section id="startscreen" class="flex-center">
       <img src="./img/9_intro_outro_screens/start/startscreen_3.png" alt="Background" class="startscreen-img">
       <div id="startscreen-btns" class="flex-center">
-          <button onclick="startGame()" class="button">
-              <span class="button__icon-wrapper">
-                  <svg class="button__icon-svg" viewBox="0 0 20 20">
-                      <path fill="none" d="M0,0h20v20H0V0z"></path>
-                      <path d="M15.8,8.8L8.3,4.2C7.3,3.6,6,4.3,6,5.4v9.1c0,1,1.1,1.7,2.1,1.2l7.6-4.2c0.9-0.5,0.9-1.8,0.1-2.2z"></path>
-                  </svg>
-              </span>
-              Play now
-          </button>
-          <button id="btn-explain" class="cta">
-              Spiel-Erklaerung
-          </button>
-          <button id="btn-impressum" class="cta">
-              Impressum
-          </button>
+          ${showPlayButton()}
+          ${showStartScreenButtons()}
       </div>
   </section>
 `;
+}
+
+/** Returns the play button HTML. */
+function showPlayButton() {
+  return /*html*/ `
+  <button onclick="startGame()" class="button">
+      <span class="button__icon-wrapper">
+          <svg class="button__icon-svg" viewBox="0 0 20 20">
+              <path fill="none" d="M0,0h20v20H0V0z"></path>
+              <path d="M15.8,8.8L8.3,4.2C7.3,3.6,6,4.3,6,5.4v9.1c0,1,1.1,1.7,2.1,1.2l7.6-4.2c0.9-0.5,0.9-1.8,0.1-2.2z"></path>
+          </svg>
+      </span>
+      Play now
+  </button>`;
+}
+
+/** Returns the extra buttons for the start screen. */
+function showStartScreenButtons() {
+  return /*html*/ `
+  <button id="btn-explain" class="cta">Spiel-Erklaerung</button>
+  <button id="btn-impressum" class="cta">Impressum</button>`;
 }
 
 /** Returns the game over HTML. */
@@ -151,13 +159,7 @@ function hideGameUI() {
 
 /** Returns a random win screen. */
 function renderGameWonScreen() {
-  const winScreens = [
-    "./img/10_You won, you lost/You Win A.png",
-    "./img/10_You won, you lost/You win B.png",
-    "./img/10_You won, you lost/You Won B.png",
-    "./img/10_You won, you lost/You won A.png",
-  ];
-  const randomScreen = winScreens[Math.floor(Math.random() * winScreens.length)];
+  const randomScreen = getRandomWinScreen();
   return `
     <div class="endscreen-content">
       <img src="${randomScreen}" alt="You won!">
@@ -168,15 +170,20 @@ function renderGameWonScreen() {
     </div>`;
 }
 
+/** Returns the path of a random win image. */
+function getRandomWinScreen() {
+  const winScreens = [
+    "./img/10_You won, you lost/You Win A.png",
+    "./img/10_You won, you lost/You win B.png",
+    "./img/10_You won, you lost/You Won B.png",
+    "./img/10_You won, you lost/You won A.png",
+  ];
+  return winScreens[Math.floor(Math.random() * winScreens.length)];
+}
+
 /** Returns a random game over screen. */
 function renderRandomGameOverScreen() {
-  const gameOverScreens = [
-    "./img/10_You won, you lost/Game Over.png",
-    "./img/10_You won, you lost/Game over A.png",
-    "./img/10_You won, you lost/You lost b.png",
-    "./img/10_You won, you lost/You lost.png",
-  ];
-  const randomScreen = gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
+  const randomScreen = getRandomGameOverScreen();
   return `
     <div class="endscreen-content">
       <img src="${randomScreen}" alt="Game Over">
@@ -185,6 +192,17 @@ function renderRandomGameOverScreen() {
         <button onclick="backToStart()" class="endscreen-btn">Back to Start</button>
       </div>
     </div>`;
+}
+
+/** Returns the path of a random game over image. */
+function getRandomGameOverScreen() {
+  const gameOverScreens = [
+    "./img/10_You won, you lost/Game Over.png",
+    "./img/10_You won, you lost/Game over A.png",
+    "./img/10_You won, you lost/You lost b.png",
+    "./img/10_You won, you lost/You lost.png",
+  ];
+  return gameOverScreens[Math.floor(Math.random() * gameOverScreens.length)];
 }
 
 /** Goes back to the start screen. */

@@ -17,18 +17,11 @@ class StatusBar extends DrawableObject {
 
   /** Chooses the image for the current percentage. */
   resolveImageIndex() {
-    if (this.percentage == 100) {
-      return 5;
-    } else if (this.percentage > 70) {
-      return 4;
-    } else if (this.percentage > 50) {
-      return 3;
-    } else if (this.percentage > 30) {
-      return 2;
-    } else if (this.percentage > 1) {
-      return 1;
-    } else {
-      return 0;
-    }
+    if (this.percentage == 100) return 5;
+    if (this.percentage > 70) return 4;
+    if (this.percentage > 50) return 3;
+    if (this.percentage > 30) return 2;
+    if (this.percentage > 1) return 1;
+    return 0;
   }
 }

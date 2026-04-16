@@ -23,7 +23,6 @@ class DrawableObject {
 
   /** Debug frame is turned off for the final game. */
   drawFrame(ctx) {
-    // no frame in final game:
     return;
   }
 

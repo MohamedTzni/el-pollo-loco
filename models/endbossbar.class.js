@@ -4,7 +4,6 @@ class EndBossBar extends StatusBar {
   x = 300;
   y = 0;
 
-  // Uses the blue health bar images for the boss.
   IMAGES = [
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png",
     "img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png",

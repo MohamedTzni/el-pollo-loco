@@ -14,7 +14,7 @@ let isSoundMuted = false;
 let isFullScreen = false;
 let portrait = window.matchMedia("(orientation: portrait)");
 
-/** Helper functions for the menu bar. */
+/** Hides the menu bar. */
 function hideMenuBar() {
   const menu = document.querySelector(".menu-bar");
   if (menu) menu.classList.add("d-none");
@@ -25,8 +25,6 @@ function showMenuBar() {
   const menu = document.querySelector(".menu-bar");
   if (menu) menu.classList.remove("d-none");
 }
-
-// Page setup
 
 /** Starts the page setup. */
 function init() {
@@ -41,20 +39,28 @@ function init() {
 
 /** Adds desktop clicks for sound and fullscreen. */
 function bindClickButtons() {
-  const btnSound = document.getElementById("btn-sound");
-  const btnFs    = document.getElementById("btn-fullscreen");
+  bindSoundButton();
+  bindFullscreenButton();
+}
 
-  if (btnSound) {
-    btnSound.addEventListener("click", (e) => {
+/** Adds click event to the sound button. */
+function bindSoundButton() {
+  const btn = document.getElementById("btn-sound");
+  if (btn) {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       keyboard.KEY_M = true;
       toggleSound();
       keyboard.KEY_M = false;
     });
   }
+}
 
-  if (btnFs) {
-    btnFs.addEventListener("click", (e) => {
+/** Adds click event to the fullscreen button. */
+function bindFullscreenButton() {
+  const btn = document.getElementById("btn-fullscreen");
+  if (btn) {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       keyboard.KEY_ESC = true;
       toggleFullscreen();
@@ -125,8 +131,6 @@ function playEndScreenSound(win) {
     }
   } catch {}
 }
-
-// Keyboard input
 
 window.addEventListener("keydown", (event) => {
   if (event.code == "ArrowRight") {
@@ -205,27 +209,57 @@ function preventContextMenu() {
 
 /** Adds touch start controls. */
 function touchStart() {
+  bindLeftTouchStart();
+  bindRightTouchStart();
+  bindJumpTouchStart();
+  bindThrowTouchStart();
+  bindSoundTouchStart();
+  bindFullscreenTouchStart();
+}
+
+/** Adds touch start for the left button. */
+function bindLeftTouchStart() {
   document.getElementById("btn-left").addEventListener("touchstart", (e) => {
     keyboard.KEY_LEFT = true;
     e.preventDefault();
   });
+}
+
+/** Adds touch start for the right button. */
+function bindRightTouchStart() {
   document.getElementById("btn-right").addEventListener("touchstart", (e) => {
     keyboard.KEY_RIGHT = true;
     e.preventDefault();
   });
+}
+
+/** Adds touch start for the jump button. */
+function bindJumpTouchStart() {
   document.getElementById("btn-jump").addEventListener("touchstart", (e) => {
     keyboard.KEY_SPACE = true;
     e.preventDefault();
   });
+}
+
+/** Adds touch start for the throw button. */
+function bindThrowTouchStart() {
   document.getElementById("btn-throw").addEventListener("touchstart", (e) => {
     keyboard.KEY_D = true;
     e.preventDefault();
   });
+}
+
+/** Adds touch start for the sound button. */
+function bindSoundTouchStart() {
   document.getElementById("btn-sound").addEventListener("touchstart", (e) => {
     keyboard.KEY_M = true;
     toggleSound();
     e.preventDefault();
   });
+}
+
+/** Adds touch start for the fullscreen button. */
+function bindFullscreenTouchStart() {
   document.getElementById("btn-fullscreen").addEventListener("touchstart", (e) => {
     keyboard.KEY_ESC = true;
     toggleFullscreen();
@@ -235,34 +269,63 @@ function touchStart() {
 
 /** Adds touch end controls. */
 function touchEnd() {
+  bindLeftTouchEnd();
+  bindRightTouchEnd();
+  bindJumpTouchEnd();
+  bindThrowTouchEnd();
+  bindSoundTouchEnd();
+  bindFullscreenTouchEnd();
+}
+
+/** Adds touch end for the left button. */
+function bindLeftTouchEnd() {
   document.getElementById("btn-left").addEventListener("touchend", (e) => {
     keyboard.KEY_LEFT = false;
     e.preventDefault();
   });
+}
+
+/** Adds touch end for the right button. */
+function bindRightTouchEnd() {
   document.getElementById("btn-right").addEventListener("touchend", (e) => {
     keyboard.KEY_RIGHT = false;
     e.preventDefault();
   });
+}
+
+/** Adds touch end for the jump button. */
+function bindJumpTouchEnd() {
   document.getElementById("btn-jump").addEventListener("touchend", (e) => {
     keyboard.KEY_SPACE = false;
     e.preventDefault();
   });
+}
+
+/** Adds touch end for the throw button. */
+function bindThrowTouchEnd() {
   document.getElementById("btn-throw").addEventListener("touchend", (e) => {
     keyboard.KEY_D = false;
     e.preventDefault();
   });
+}
+
+/** Adds touch end for the sound button. */
+function bindSoundTouchEnd() {
   document.getElementById("btn-sound").addEventListener("touchend", (e) => {
     keyboard.KEY_M = false;
     e.preventDefault();
   });
+}
+
+/** Adds touch end for the fullscreen button. */
+function bindFullscreenTouchEnd() {
   document.getElementById("btn-fullscreen").addEventListener("touchend", (e) => {
     keyboard.KEY_ESC = false;
     e.preventDefault();
   });
 }
 
-// Sound
-
+/** Toggles the game sound on or off. */
 function toggleSound() {
   isSoundMuted = !isSoundMuted;
   muteAudioFiles(isSoundMuted);
@@ -306,17 +369,32 @@ function loadSoundSettings() {
 /** Mutes or unmutes all game sounds. */
 function muteAudioFiles(boolean) {
   if (!world) return;
+  muteCharacterSounds(boolean);
+  muteWorldSounds(boolean);
+  muteCollectableSounds(boolean);
+}
 
-  if (world.character) {
-    if (world.character.walking_sound) world.character.walking_sound.muted = boolean;
-    if (world.character.hurt_sound)    world.character.hurt_sound.muted    = boolean;
-    if (world.character.dead_sound)    world.character.dead_sound.muted    = boolean;
-    if (world.character.jump_sound)    world.character.jump_sound.muted    = boolean;
-  }
+/** Mutes or unmutes character sounds. */
+function muteCharacterSounds(boolean) {
+  if (!world.character) return;
+  if (world.character.walking_sound) world.character.walking_sound.muted = boolean;
+  if (world.character.hurt_sound) world.character.hurt_sound.muted = boolean;
+  if (world.character.dead_sound) world.character.dead_sound.muted = boolean;
+  if (world.character.jump_sound) world.character.jump_sound.muted = boolean;
+}
 
+/** Mutes or unmutes world sounds. */
+function muteWorldSounds(boolean) {
   if (world.chickenHurt_sound) world.chickenHurt_sound.muted = boolean;
   if (world.throwBottle_sound) world.throwBottle_sound.muted = boolean;
-if (world.backgroundMusic) {
+  muteBackgroundMusic(boolean);
+  const endboss = world.level?.enemies?.find((enemy) => enemy instanceof Endboss);
+  if (endboss?.endbossDead_sound) endboss.endbossDead_sound.muted = boolean;
+}
+
+/** Mutes or unmutes the background music. */
+function muteBackgroundMusic(boolean) {
+  if (!world.backgroundMusic) return;
   world.backgroundMusic.muted = boolean;
   if (boolean) {
     try { world.backgroundMusic.pause(); } catch (e) {}
@@ -325,25 +403,18 @@ if (world.backgroundMusic) {
   }
 }
 
-  const endboss = world.level?.enemies?.find((enemy) => enemy instanceof Endboss);
-  if (endboss?.endbossDead_sound) {
-    endboss.endbossDead_sound.muted = boolean;
-  }
-
+/** Mutes or unmutes all collectable sounds. */
+function muteCollectableSounds(boolean) {
   const collectables = [
     ...(world.level?.bottles || []),
     ...(world.level?.coins || []),
   ];
-
   for (let i = 0; i < collectables.length; i++) {
     const item = collectables[i];
-    if (item && item.collect_sound) {
-      item.collect_sound.muted = boolean;
-    }
+    if (item && item.collect_sound) item.collect_sound.muted = boolean;
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   init();
 });
-
