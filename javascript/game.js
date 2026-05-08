@@ -181,6 +181,12 @@ window.addEventListener("keyup", (event) => {
 
 portrait.addEventListener("change", () => checkMobileOrientation());
 
+window.addEventListener("resize", () => {
+  if (typeof setMobileControlButtons === "function") {
+    setMobileControlButtons();
+  }
+});
+
 /** Checks if the screen is a small mobile screen. */
 function detectMobileDevice() {
   if (window.innerWidth < 500 && window.innerHeight < 900) {
