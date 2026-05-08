@@ -112,7 +112,7 @@ World.prototype.handleNormalEnemyCollision = function (enemy) {
     this.killEnemy(enemy);
     this.character.bounceUp();
   } else {
-    const didHit = this.character.hit(5);
+    const didHit = this.character.hit(20);
     if (didHit) {
       this.playSound(this.character.hurt_sound);
       this.statusBar.setPercentage(this.character.energy);

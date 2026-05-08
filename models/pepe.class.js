@@ -82,7 +82,7 @@ class Pepe extends MovableObject {
   idleTimeoutMs = 12000;
   flippedGraphics = false;
   deathHandled = false;
-  hitCooldown = 1400;
+  hitCooldown = 800;
 
   /** Creates Pepe and starts his animation. */
   constructor() {
