@@ -110,6 +110,7 @@ World.prototype.handleEndbossCollision = function () {
 World.prototype.handleNormalEnemyCollision = function (enemy) {
   if (this.isJumpingOnEnemy(enemy)) {
     this.killEnemy(enemy);
+    this.character.bounceUp();
   } else {
     const didHit = this.character.hit(5);
     if (didHit) {
@@ -121,15 +122,10 @@ World.prototype.handleNormalEnemyCollision = function (enemy) {
 
 /** Checks if Pepe lands on an enemy. */
 World.prototype.isJumpingOnEnemy = function (enemy) {
-  const characterFeet = this.character.y + this.character.height - this.character.offset.bottom;
-  const enemyTop = enemy.y + enemy.offset.top;
-  return (
-    this.character.speedY < 0 &&
-    characterFeet <= enemyTop + enemy.height * 0.45
-  );
+  return this.character.isAboveGround() && this.character.speedY < 0;
 };
 
-/** Kills an enemy and removes it later. */
+/** Kills an enemy, shows death sprite briefly, then removes it. */
 World.prototype.killEnemy = function (enemy) {
   if (enemy.isAlive) {
     enemy.isAlive = false;
@@ -138,7 +134,7 @@ World.prototype.killEnemy = function (enemy) {
     setTimeout(() => {
       const enemyIndex = this.level.enemies.indexOf(enemy);
       if (enemyIndex > -1) this.level.enemies.splice(enemyIndex, 1);
-    }, 2000);
+    }, 300);
   }
 };
 
