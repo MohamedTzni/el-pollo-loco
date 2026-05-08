@@ -112,8 +112,9 @@ function showEndScreen() {
   }
   hideGameUI();
   document.getElementById("mainheadline").classList.add("d-none");
+  document.querySelector(".controls-container-bottom").classList.add("d-none");
   endscreen.classList.remove("d-none");
-  showMenuBar();
+  hideMenuBar();
   playEndScreenSound(world.gameWon);
 }
 
@@ -179,17 +180,24 @@ window.addEventListener("keyup", (event) => {
   }
 });
 
-portrait.addEventListener("change", () => checkMobileOrientation());
+portrait.addEventListener("change", () => {
+  if (window.innerWidth <= 914) {
+    checkMobileOrientation();
+  }
+});
 
 window.addEventListener("resize", () => {
+  if (window.innerWidth <= 914) {
+    checkMobileOrientation();
+  }
   if (typeof setMobileControlButtons === "function") {
     setMobileControlButtons();
   }
 });
 
-/** Checks if the screen is a small mobile screen. */
+/** Checks if the screen is a mobile screen. */
 function detectMobileDevice() {
-  if (window.innerWidth < 500 && window.innerHeight < 900) {
+  if (window.innerWidth <= 914) {
     checkMobileOrientation();
   }
 }

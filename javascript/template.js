@@ -34,6 +34,7 @@ function showGameUI() {
   document.getElementById("infobtn").classList.add("d-none");
   document.getElementById("btn-fullscreen").classList.remove("d-none");
   document.getElementById("btn-sound").classList.remove("d-none");
+  document.querySelector(".controls-container-bottom").classList.remove("d-none");
   setMobileControlButtons();
 }
 

@@ -19,7 +19,7 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   margin: 0;
-  background-image: url("./img/9_background/desert4.jpg");
+  background-image: url("./img/9_background/desert3.png");
   background-size: cover;
   background-position: center;
   font-family: "AkayaKanadaka", Arial, Helvetica, sans-serif;
@@ -47,11 +47,12 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #000;
-  background-image: url("./img/9_background/desert4.jpg");
+  background-color: transparent;
+  background-image: url("./img/9_background/desert3.png");
   background-size: cover;
   background-position: center;
   z-index: 9999;
@@ -59,7 +60,7 @@ body {
 }
 
 #fullscreen.fullscreen #endscreen {
-  background-image: url("./img/9_background/desert4.jpg");
+  background-image: url("./img/9_background/desert3.png");
   background-size: cover;
   background-position: center;
 }
@@ -70,6 +71,7 @@ canvas.fullscreen,
 #canvas.fullscreen {
   width: 100vw !important;
   height: 100vh !important;
+  height: 100dvh !important;
   max-width: none !important;
   max-height: none !important;
   object-fit: fill !important;
@@ -88,14 +90,7 @@ body.fullscreen-enabled {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
-}
-
-#fullscreen.fullscreen .controls-container-bottom,
-#fullscreen.fullscreen .menu-bar {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 10000;
+  height: 100dvh;
 }
 
 .defaultendscreen {
@@ -496,13 +491,14 @@ canvas {
 
 #rotationAlert {
   position: absolute;
-  height: 100vh;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  height: 100vh;
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 9;
+  z-index: 10002;
   font-size: 60px;
   text-align: center;
   letter-spacing: 2px;
@@ -550,7 +546,7 @@ canvas {
     box-sizing: border-box;
   }
   canvas {
-    width: min(100vw, 720px);
+    width: min(100vw, 720px, calc((100dvh - 92px) * 3 / 2));
     max-width: 100vw;
     height: auto;
     aspect-ratio: 3 / 2;
@@ -564,10 +560,16 @@ canvas {
     object-fit: contain;
   }
   .menu-bar {
+    position: fixed;
+    bottom: 106px;
+    left: 12px;
+    right: 12px;
+    z-index: 45;
+    margin: 0;
     gap: 10px;
     flex-wrap: wrap;
-    margin: 8px 12px 0;
-    padding-bottom: env(safe-area-inset-bottom);
+    justify-content: center;
+    padding: 0;
   }
   .button {
     width: min(44vw, 180px);
@@ -602,12 +604,11 @@ canvas {
   }
   .controls-container-bottom {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
     margin: 0;
     padding: 10px 12px 14px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.18));
     z-index: 50;
     justify-content: space-between;
     align-items: flex-end;
@@ -669,15 +670,15 @@ canvas {
 }
 @media only screen and (max-width: 916px) and (max-height: 480px) {
   #fullscreen {
-    padding-bottom: max(74px, env(safe-area-inset-bottom));
+    padding-bottom: 0;
   }
   canvas {
     width: 100vw;
-    height: auto;
-    max-height: calc(100vh - 74px);
-    max-height: calc(100dvh - 74px);
-    aspect-ratio: 3 / 2;
-    object-fit: contain;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: fill;
   }
   #startscreen img,
   #endscreen img {
@@ -976,34 +977,55 @@ body.impressum-page {
 
 @media only screen and (max-width: 914px) {
   body.fullscreen-enabled {
-    overflow: visible !important;
+    overflow: hidden !important;
+    height: 100vh;
+    height: 100dvh;
   }
   #fullscreen.fullscreen {
-    overflow: visible !important;
+    overflow: hidden !important;
+    height: 100vh;
+    height: 100dvh;
   }
   #fullscreen.fullscreen canvas,
   #fullscreen.fullscreen #canvas {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
+    height: 100dvh !important;
     max-width: none !important;
     max-height: none !important;
     object-fit: fill !important;
+    background-color: transparent !important;
   }
   #fullscreen.fullscreen .controls-container-bottom {
     display: flex !important;
     position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    bottom: 12px !important;
+    left: 12px !important;
+    right: 12px !important;
     z-index: 10001 !important;
   }
   #fullscreen.fullscreen .btns-top {
     display: flex !important;
     position: fixed !important;
-    top: 12px !important;
-    right: 12px !important;
+    top: max(12px, env(safe-area-inset-top)) !important;
+    right: max(12px, env(safe-area-inset-right)) !important;
     bottom: auto !important;
     left: auto !important;
     z-index: 10001 !important;
+  }
+  #fullscreen.fullscreen #rotationAlert:not(.d-none) {
+    display: flex !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 10002 !important;
   }
 }
