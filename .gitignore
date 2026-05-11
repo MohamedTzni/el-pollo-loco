@@ -1,5 +1,6 @@
 # Ignore local branch/build artifacts or workspace folder
 
 dist
+.htaccess
 
 
