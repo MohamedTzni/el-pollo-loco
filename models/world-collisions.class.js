@@ -11,10 +11,15 @@ World.prototype.checkCollisions = function () {
 /** Checks if Pepe touches an enemy. */
 World.prototype.checkCharacterEnemyCollisions = function () {
   this.level.enemies.forEach((enemy) => {
-    const hasCollision = enemy instanceof Endboss
+    const isEndboss = enemy instanceof Endboss;
+    const hasCollision = isEndboss
       ? this.isBossColliding(enemy)
       : this.character.isColliding(enemy);
-    if (hasCollision) this.handleEnemyCollision(enemy);
+    if (hasCollision) {
+      if (!isEndboss && enemy.touchingCharacter) return;
+      this.handleEnemyCollision(enemy);
+    }
+    if (!isEndboss) enemy.touchingCharacter = hasCollision;
   });
 };
 
