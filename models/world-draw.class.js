@@ -21,13 +21,12 @@ World.prototype.clearCanvas = function () {
 
 /** Gets the scale for the game objects. */
 World.prototype.getRenderMetrics = function () {
-  const scale = Math.max(
-    this.canvas.width / this.baseWidth,
-    this.canvas.height / this.baseHeight
-  );
-  const offsetX = (this.canvas.width - this.baseWidth * scale) / 2;
-  const offsetY = (this.canvas.height - this.baseHeight * scale) / 2;
-  return { scale, offsetX, offsetY };
+  return {
+    scaleX: this.canvas.width / this.baseWidth,
+    scaleY: this.canvas.height / this.baseHeight,
+    offsetX: 0,
+    offsetY: 0,
+  };
 };
 
 /** Gets the scale for the bars. */
@@ -43,8 +42,8 @@ World.prototype.getHudMetrics = function () {
 
 /** Draws the background and clouds. */
 World.prototype.drawBackground = function () {
-  const { scale, offsetX, offsetY } = this.getRenderMetrics();
-  this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+  const { scaleX, scaleY, offsetX, offsetY } = this.getRenderMetrics();
+  this.ctx.setTransform(scaleX, 0, 0, scaleY, offsetX, offsetY);
   this.ctx.translate(this.camera_x, 0);
   this.addObjectsToMap(this.level.backgroundObjects);
   this.addObjectsToMap(this.level.clouds);
@@ -63,8 +62,8 @@ World.prototype.drawFixedObjects = function () {
 
 /** Draws Pepe, enemies, items and bottles. */
 World.prototype.drawDynamicObjects = function () {
-  const { scale, offsetX, offsetY } = this.getRenderMetrics();
-  this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+  const { scaleX, scaleY, offsetX, offsetY } = this.getRenderMetrics();
+  this.ctx.setTransform(scaleX, 0, 0, scaleY, offsetX, offsetY);
   this.ctx.translate(this.camera_x, 0);
   this.addToMap(this.character);
   this.addObjectsToMap(this.level.bottles);
