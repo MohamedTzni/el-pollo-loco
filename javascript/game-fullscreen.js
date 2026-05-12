@@ -19,23 +19,27 @@ function applyFullscreenClasses(fullscreen, canvasEl) {
   canvasEl.classList.add("fullscreen");
   document.getElementById("endscreen").classList.add("fullscreen");
   document.getElementById("mainheadline").classList.add("d-none");
-  canvasEl.width = window.innerWidth;
-  canvasEl.height = window.innerHeight;
-  canvasEl.style.width = "100vw";
-  canvasEl.style.height = "100vh";
-  canvasEl.style.objectFit = "fill";
+  resizeCanvasForCurrentMode();
 }
 
-window.addEventListener("resize", () => {
-  if (isFullScreen) {
-    const canvasEl = document.getElementById("canvas");
-    if (!canvasEl) return;
+/** Resizes the canvas for fullscreen or responsive game mode. */
+function resizeCanvasForCurrentMode() {
+  const canvasEl = document.getElementById("canvas");
+  if (!canvasEl) return;
+  const responsiveGame = typeof isResponsiveGameLayout === "function" && isResponsiveGameLayout() && !canvasEl.classList.contains("d-none");
+  if (isFullScreen || responsiveGame) {
     canvasEl.width = window.innerWidth;
     canvasEl.height = window.innerHeight;
     canvasEl.style.width = "100vw";
     canvasEl.style.height = "100vh";
+    canvasEl.style.objectFit = "fill";
+  } else {
+    resetCanvasSize(canvasEl);
   }
-});
+}
+
+window.addEventListener("resize", resizeCanvasForCurrentMode);
+window.addEventListener("orientationchange", resizeCanvasForCurrentMode);
 
 /** Opens the browser fullscreen mode. */
 function enterFullscreen(element) {
@@ -63,7 +67,11 @@ document.addEventListener("fullscreenchange", fullscreenchangelog);
 function fullscreenchangelog() {
   if (!document.fullscreenElement) {
     leaveFullscreen();
+  } else {
+    isFullScreen = true;
+    resizeCanvasForCurrentMode();
   }
+  if (typeof updateResponsiveUI === "function") updateResponsiveUI();
 }
 
 /** Resets the page after fullscreen mode. */
@@ -84,6 +92,11 @@ function removeFullscreenClasses() {
   canvasEl.classList.remove("fullscreen");
   document.getElementById("endscreen").classList.remove("fullscreen");
   document.getElementById("mainheadline").classList.remove("d-none");
+  resetCanvasSize(canvasEl);
+}
+
+/** Resets the canvas to the desktop size. */
+function resetCanvasSize(canvasEl) {
   canvasEl.style.width = "100%";
   canvasEl.style.height = "auto";
   canvasEl.style.objectFit = "initial";

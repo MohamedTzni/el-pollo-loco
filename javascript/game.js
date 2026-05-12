@@ -14,6 +14,24 @@ let isSoundMuted = false;
 let isFullScreen = false;
 let portrait = window.matchMedia("(orientation: portrait)");
 
+/** Checks if the game canvas is currently active. */
+function isGameRunning() {
+  const canvasEl = document.getElementById("canvas");
+  return !!canvasEl && !canvasEl.classList.contains("d-none");
+}
+
+/** Checks if the UI should use touch/responsive controls. */
+function isResponsiveGameLayout() {
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  const smallScreen = window.innerWidth <= 914 || (window.innerWidth <= 1024 && window.innerHeight <= 540);
+  return isTouchDevice() || coarsePointer || smallScreen;
+}
+
+/** Checks if the current viewport is portrait. */
+function isPortraitMode() {
+  return window.matchMedia("(orientation: portrait)").matches || window.innerHeight > window.innerWidth;
+}
+
 /** Hides the menu bar. */
 function hideMenuBar() {
   const menu = document.querySelector(".menu-bar");
@@ -30,7 +48,8 @@ function showMenuBar() {
 function init() {
   initSoundSettings();
   setSoundIcon();
-  detectMobileDevice();
+  bindResponsiveListeners();
+  updateResponsiveUI();
   touchStart();
   touchEnd();
   preventContextMenu();
@@ -77,6 +96,7 @@ function startGame() {
   canvas = document.getElementById("canvas");
   canvas.classList.remove("d-none");
   world = new World(canvas, keyboard);
+  updateResponsiveUI();
   loadSoundSettings();
 }
 
@@ -180,37 +200,44 @@ window.addEventListener("keyup", (event) => {
   }
 });
 
-portrait.addEventListener("change", () => {
-  if (window.innerWidth <= 914) {
-    checkMobileOrientation();
-  }
-});
-
-window.addEventListener("resize", () => {
-  if (window.innerWidth <= 914) {
-    checkMobileOrientation();
-  }
-  if (typeof setMobileControlButtons === "function") {
-    setMobileControlButtons();
-  }
-});
+/** Adds live responsive event listeners. */
+function bindResponsiveListeners() {
+  const update = () => updateResponsiveUI();
+  window.addEventListener("resize", update);
+  window.addEventListener("orientationchange", update);
+  document.addEventListener("fullscreenchange", update);
+  if (portrait.addEventListener) portrait.addEventListener("change", update);
+}
 
 /** Checks if the screen is a mobile screen. */
 function detectMobileDevice() {
-  if (window.innerWidth <= 914) {
-    checkMobileOrientation();
-  }
+  updateResponsiveUI();
 }
 
 /** Shows the rotate message in portrait mode. */
 function checkMobileOrientation() {
-  if (portrait.matches) {
-    document.getElementById("rotationAlert").classList.remove("d-none");
-    document.getElementById("controlsdescription").classList.add("d-none");
-  } else {
-    document.getElementById("rotationAlert").classList.add("d-none");
-    document.getElementById("controlsdescription").classList.remove("d-none");
-  }
+  const showRotate = isResponsiveGameLayout() && isPortraitMode() && isGameRunning();
+  document.getElementById("rotationAlert").classList.toggle("d-none", !showRotate);
+  document.getElementById("controlsdescription").classList.toggle("d-none", isResponsiveGameLayout() || showRotate);
+}
+
+/** Updates all responsive classes and controls without requiring a reload. */
+function updateResponsiveUI() {
+  const responsive = isResponsiveGameLayout();
+  const running = isGameRunning();
+  document.body.classList.toggle("responsive-layout", responsive);
+  document.body.classList.toggle("mobile-game-active", responsive && running);
+  updateFullscreenButton(responsive, running);
+  checkMobileOrientation();
+  if (typeof setMobileControlButtons === "function") setMobileControlButtons();
+  if (typeof resizeCanvasForCurrentMode === "function") resizeCanvasForCurrentMode();
+}
+
+/** Shows the fullscreen button only on desktop while the game runs. */
+function updateFullscreenButton(responsive, running) {
+  const button = document.getElementById("btn-fullscreen");
+  if (!button) return;
+  button.classList.toggle("d-none", responsive || !running);
 }
 
 /** Prevents the context menu on control buttons. */

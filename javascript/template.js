@@ -1,9 +1,11 @@
 /** Checks if the device can use touch. */
-function isTouchDevice(){ return ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }
+function isTouchDevice() {
+  return ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+}
 
 /** Checks if mobile buttons should be shown. */
 function shouldShowMobileControls() {
-  return window.innerWidth <= 914;
+  return isResponsiveGameLayout();
 }
 
 /** Returns the canvas HTML. */
@@ -32,18 +34,18 @@ function showGameUI() {
   document.getElementById("startscreen").classList.add("d-none");
   document.getElementById("controlsdescription").classList.remove("d-none");
   document.getElementById("infobtn").classList.add("d-none");
-  document.getElementById("btn-fullscreen").classList.remove("d-none");
   document.getElementById("btn-sound").classList.remove("d-none");
   document.querySelector(".controls-container-bottom").classList.remove("d-none");
-  setMobileControlButtons();
+  updateResponsiveUI();
 }
 
 /** Shows mobile buttons only on small screens. */
 function setMobileControlButtons() {
+  const showControls = shouldShowMobileControls() && isGameRunning();
   ["btn-left", "btn-right", "btn-jump", "btn-throw"].forEach((id) => {
     let button = document.getElementById(id);
-    button.classList.toggle("d-none", !shouldShowMobileControls());
-    button.classList.toggle("hide", !shouldShowMobileControls());
+    button.classList.toggle("d-none", !showControls);
+    button.classList.toggle("hide", !showControls);
   });
 }
 
@@ -217,4 +219,5 @@ function backToStart() {
   showMenuBar();
   level1 = resetLevel();
   world = null;
+  updateResponsiveUI();
 }
